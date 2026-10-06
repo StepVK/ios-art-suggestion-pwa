@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ArtPrompt — Studio Reference Hub</title>
+  <title>ArtPrompt — Smart Word References</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
   <!-- iOS PWA Meta Tags -->
@@ -12,15 +12,15 @@
   <meta name="theme-color" content="#09090b">
 
   <!-- Embedded Web App Manifest -->
-  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Art%20Prompt%20Daily%22%2C%22short_name%22%3A%22ArtPrompt%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%2309090b%22%7D">
+  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Smart%20Art%20Prompt%22%2C%22short_name%22%3A%22ArtPrompt%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%2309090b%22%7D">
 
   <style>
     :root {
       --bg: #09090b;
       --card-bg: rgba(24, 24, 27, 0.85);
-      --card-border: rgba(255, 255, 255, 0.12);
+      --card-border: rgba(255, 255, 255, 0.1);
       --accent: #8b5cf6;
-      --accent-gradient: linear-gradient(135deg, #8b5cf6, #ec4899);
+      --accent-gradient: linear-gradient(135deg, #8b5cf6, #d946ef);
       --text: #f4f4f5;
       --text-muted: #a1a1aa;
     }
@@ -67,7 +67,7 @@
     }
 
     .date-str {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
     }
 
@@ -79,37 +79,63 @@
       border: 1px solid var(--card-border);
       border-radius: 22px;
       padding: 20px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-      margin-bottom: 22px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      margin-bottom: 20px;
     }
 
-    .prompt-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      line-height: 1.4;
-      margin-bottom: 12px;
-      color: #fff;
+    .prompt-subtitle {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
     }
 
-    .tags {
+    /* Word Chips */
+    .words-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    .tag {
-      font-size: 0.7rem;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 4px 9px;
-      border-radius: 8px;
-      color: var(--text-muted);
-    }
-
-    /* Buttons */
-    .actions {
-      display: flex;
       gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .word-chip {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 16px;
+      border-radius: 14px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .word-index {
+      font-size: 0.65rem;
+      color: #a78bfa;
+      font-weight: 700;
+      background: rgba(139, 92, 246, 0.2);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    /* Reference Buttons Grid */
+    .ref-btn-section-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .ref-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
     button {
@@ -122,94 +148,101 @@
       gap: 6px;
       border-radius: 14px;
       font-weight: 600;
-      transition: transform 0.12s ease;
+      transition: transform 0.12s ease, background 0.2s ease;
     }
 
     button:active {
-      transform: scale(0.96);
+      transform: scale(0.97);
     }
 
-    .btn-primary {
-      flex: 1;
+    .btn-ref {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: #f4f4f5;
+      padding: 11px 14px;
+      font-size: 0.88rem;
+      justify-content: space-between;
+    }
+
+    .btn-ref.active {
+      border-color: #a78bfa;
+      background: rgba(139, 92, 246, 0.2);
+      color: #fff;
+    }
+
+    .btn-ref-combined {
       background: var(--accent-gradient);
-      color: white;
-      padding: 12px 16px;
+      color: #fff;
+      padding: 12px 14px;
       font-size: 0.92rem;
-      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+      border: none;
     }
 
-    .btn-secondary {
+    /* Bottom Control Bar */
+    .controls {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 14px;
+    }
+
+    .btn-reroll {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: #e4e4e7;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+    }
+
+    .btn-share {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--card-border);
       color: var(--text);
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 14px;
     }
 
-    /* Custom Input Sheet */
-    .custom-input-box {
-      margin-top: 14px;
-      display: none;
-      gap: 8px;
-    }
-
-    .custom-input-box.active {
-      display: flex;
-    }
-
-    .custom-input-box input {
-      flex: 1;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 10px 14px;
-      color: #fff;
-      font-size: 0.88rem;
-      outline: none;
-      user-select: text;
-    }
-
-    .custom-input-box button {
-      background: #8b5cf6;
-      color: white;
-      padding: 0 14px;
-      border-radius: 12px;
-      font-size: 0.82rem;
-    }
-
-    /* Reference Gallery */
-    .section-header {
+    /* References Gallery */
+    .gallery-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
 
-    .section-title {
+    .gallery-title {
       font-size: 1rem;
       font-weight: 700;
     }
 
     .gallery {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    /* Large Feature Reference (Card 1) */
-    .gallery .ref-card:first-child {
-      grid-column: span 2;
-      height: 220px;
+    .empty-state {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 34px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.5;
     }
 
     .ref-card {
       position: relative;
-      height: 160px;
-      border-radius: 16px;
+      height: 220px;
+      border-radius: 18px;
       overflow: hidden;
       background: #141416;
       border: 1px solid var(--card-border);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     }
 
     .ref-card img {
@@ -217,7 +250,7 @@
       height: 100%;
       object-fit: cover;
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.35s ease;
     }
 
     .ref-card img.loaded {
@@ -229,24 +262,24 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 8px 10px;
+      padding: 10px 14px;
       background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.2) 80%, transparent);
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      color: #f4f4f5;
+      color: #fff;
     }
 
-    .study-type {
+    .study-tag {
       font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #a78bfa;
-      margin-bottom: 2px;
+      letter-spacing: 0.06em;
+      color: #c4b5fd;
       display: block;
+      margin-bottom: 2px;
     }
 
     /* Skeleton Loading State */
-    .skeleton-loader {
+    .skeleton {
       position: absolute;
       inset: 0;
       background: linear-gradient(90deg, #18181b 25%, #27272a 50%, #18181b 75%);
@@ -259,7 +292,7 @@
       100% { background-position: -200% 0; }
     }
 
-    /* Lightbox Modal */
+    /* Modal / Lightbox */
     .modal {
       position: fixed;
       inset: 0;
@@ -292,50 +325,44 @@
 <body>
 
   <header>
-    <span class="badge">Art Prompt</span>
+    <span class="badge">Art Prompt Studio</span>
     <span class="date-str" id="currentDate">Today</span>
   </header>
 
   <main>
+    <!-- Smart Words Card -->
     <div class="prompt-card">
-      <div class="prompt-title" id="promptText">Loading prompt...</div>
-      <div class="tags" id="promptTags"></div>
-      
-      <div class="actions">
-        <button class="btn-primary" id="btnRoll">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          New Daily Roll
+      <div class="prompt-subtitle">Visual Spark Words</div>
+      <div class="words-container" id="wordsContainer"></div>
+
+      <div class="ref-btn-section-label">Fetch Visual References (3 Studies)</div>
+      <div class="ref-buttons" id="refButtons"></div>
+
+      <div class="controls">
+        <button class="btn-reroll" id="btnReroll">
+          <span style="font-size: 1.15rem; line-height: 1;">🙁</span>
+          No likey :(
         </button>
 
-        <button class="btn-secondary" id="btnToggleCustom" title="Edit Prompt">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-          </svg>
-        </button>
-
-        <button class="btn-secondary" id="btnShare" aria-label="Share">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button class="btn-share" id="btnShare" aria-label="Share">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
           </svg>
         </button>
       </div>
+    </div>
 
-      <!-- Custom Prompt Box -->
-      <div class="custom-input-box" id="customInputBox">
-        <input type="text" id="customInput" placeholder="e.g., A witch's workshop with glowing jars in cyberpunk...">
-        <button id="btnSubmitCustom">Set</button>
+    <!-- References Gallery -->
+    <div class="gallery-header">
+      <h2 class="gallery-title" id="galleryTitle">References</h2>
+      <span class="date-str" id="statusLabel">Idle</span>
+    </div>
+
+    <div class="gallery" id="galleryContainer">
+      <div class="empty-state">
+        Select a button above to generate 3 targeted reference studies for a single word or the full combination.
       </div>
     </div>
-
-    <!-- 5 Dedicated Studies -->
-    <div class="section-header">
-      <h2 class="section-title">Visual References (5 Studies)</h2>
-      <span class="date-str" id="statusLabel">Rendering...</span>
-    </div>
-
-    <div class="gallery" id="galleryContainer"></div>
   </main>
 
   <!-- Fullscreen Lightbox -->
@@ -344,113 +371,131 @@
   </div>
 
   <script>
-    const CURATED_PROMPTS = [
-      {
-        main: "A witch's alchemy workshop filled with glowing potion jars and cybernetic neon cables",
-        style: "Cyberpunk Fantasy",
-        palette: "Bioluminescent Violet & Cyan",
-        detail: "glass potion bottles filled with glowing neon liquid, microchips, copper pipes",
-        interior: "cluttered futuristic apothecary workbench, floating holographic runes"
-      },
-      {
-        main: "A solitary Victorian greenhouse overgrown with giant luminous flora in deep fog",
-        style: "Atmospheric Concept Art",
-        palette: "Emerald Mist & Gold",
-        detail: "ancient glass panes, exotic glowing fern leaves, brass watering tools",
-        interior: "sprawling glass ceiling, winding iron stairs, humid sunbeams"
-      },
-      {
-        main: "A mechanical wandering knight resting inside a sunlit meadow of red poppies",
-        style: "Studio Ghibli Aesthetic",
-        palette: "Vibrant Sunny Watercolor",
-        detail: "engraved rusted brass armor plates, wild poppies growing through joints",
-        interior: "wide sweeping hillside, distant wind turbines, fluffy white clouds"
-      },
-      {
-        main: "A sunken gothic cathedral underwater illuminated by god rays and schooling manta rays",
-        style: "Surreal Digital Painting",
-        palette: "Deep Ocean Ultramarine & Sun Rays",
-        detail: "barnacle-covered stone gargoyles, stained glass covered in sea moss",
-        interior: "towering stone arches submerged in clear sea, drifting particles"
-      },
-      {
-        main: "A cozy ramen stall situated at a rain-slicked neon street corner in Neo-Tokyo",
-        style: "Retro Sci-Fi Illustration",
-        palette: "Rainy Midnight & Amber Neon",
-        detail: "steaming noodle bowls, hanging paper lanterns, reflective wet pavement",
-        interior: "narrow wooden bar stool counter, condensation on window glasses"
-      }
+    // Curated Conceptual Word Banks
+    const BUCKET_SUBJECTS = [
+      "Leviathan", "Alchemist", "Golem", "Locomotive", "Astronaut", "Gargoyle",
+      "Lighthouse", "Marionette", "Scarecrow", "Clockwork", "Relic", "Nomad",
+      "Samurai", "Jellyfish", "Beekeeper", "Diver", "Hermit", "Monolith"
     ];
 
-    const today = new Date();
-    document.getElementById("currentDate").textContent = today.toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" });
+    const BUCKET_TEXTURES = [
+      "Obsidian", "Bioluminescent", "Crystalline", "Overgrown", "Molten",
+      "Porcelain", "Submerged", "Corroded", "Prismatic", "Verdant", "Gilded",
+      "Spectral", "Shattered", "Driftwood", "Iridescent", "Neon"
+    ];
 
-    let activePrompt = CURATED_PROMPTS[0];
+    const BUCKET_ENVIRONMENTS = [
+      "Cathedral", "Eclipse", "Trench", "Nebula", "Catacombs", "Monsoon",
+      "Sanctuary", "Permafrost", "Abyss", "Dunes", "Greenhouse", "Foundry",
+      "Archway", "Canopy", "Spire"
+    ];
 
-    function renderPrompt(promptObj) {
-      document.getElementById("promptText").textContent = promptObj.main;
-      const tagsEl = document.getElementById("promptTags");
-      tagsEl.innerHTML = `
-        <span class="tag">${promptObj.style}</span>
-        <span class="tag">${promptObj.palette}</span>
-        <span class="tag">5 Contextual Studies</span>
-      `;
-      loadReferenceStudies(promptObj);
+    let currentWords = [];
+
+    // Smart Generator: Combines buckets into evocative pairs or triplets
+    function generateSmartWords() {
+      const isTriplet = Math.random() > 0.35; // ~65% chance of 3 words, 35% chance of 2
+      const subject = BUCKET_SUBJECTS[Math.floor(Math.random() * BUCKET_SUBJECTS.length)];
+      const texture = BUCKET_TEXTURES[Math.floor(Math.random() * BUCKET_TEXTURES.length)];
+      const env = BUCKET_ENVIRONMENTS[Math.floor(Math.random() * BUCKET_ENVIRONMENTS.length)];
+
+      if (isTriplet) {
+        return [texture, subject, env];
+      } else {
+        return Math.random() > 0.5 ? [texture, subject] : [subject, env];
+      }
     }
 
-    // Generate 5 distinct, highly relevant visual reference studies for the prompt
-    function loadReferenceStudies(promptObj) {
+    function renderUI() {
+      // 1. Render Words
+      const wordsContainer = document.getElementById("wordsContainer");
+      wordsContainer.innerHTML = currentWords.map((word, i) => `
+        <div class="word-chip">
+          <span class="word-index">${i + 1}</span>
+          ${word}
+        </div>
+      `).join("");
+
+      // 2. Render Reference Buttons
+      const btnContainer = document.getElementById("refButtons");
+      let buttonsHtml = currentWords.map((word, i) => `
+        <button class="btn-ref" onclick="fetchReferencesFor('${word}', 'Word: ${word}')">
+          <span>Generate reference for <strong>${word}</strong></span>
+          <span style="color:#a78bfa">→</span>
+        </button>
+      `).join("");
+
+      // Combined Button
+      const combinedQuery = currentWords.join(" ");
+      buttonsHtml += `
+        <button class="btn-ref btn-ref-combined" onclick="fetchReferencesFor('${combinedQuery}', 'Combined: ${combinedQuery}')">
+          <span>✨ Generate combined reference (${currentWords.length} words)</span>
+          <span>→</span>
+        </button>
+      `;
+
+      btnContainer.innerHTML = buttonsHtml;
+
+      // Reset gallery to empty state
+      document.getElementById("galleryContainer").innerHTML = `
+        <div class="empty-state">
+          Select a button above to generate 3 targeted reference studies.
+        </div>
+      `;
+      document.getElementById("statusLabel").textContent = "Idle";
+      document.getElementById("galleryTitle").textContent = "References";
+    }
+
+    // Pull or Generate 3 targeted visual references
+    function fetchReferencesFor(query, titleLabel) {
       const container = document.getElementById("galleryContainer");
       const statusLabel = document.getElementById("statusLabel");
-      container.innerHTML = "";
-      statusLabel.textContent = "Generating 5 studies...";
+      const galleryTitle = document.getElementById("galleryTitle");
 
+      galleryTitle.textContent = titleLabel;
+      statusLabel.textContent = "Rendering 3 studies...";
+
+      // 3 Targeted studies for artists (Composition, Texture/Material, Lighting/Atmosphere)
       const seedBase = Math.floor(Math.random() * 89999) + 1000;
-
-      // 5 distinct perspectives directly based on the prompt
       const studies = [
         {
-          type: "Study 1 • Scene Overview",
-          label: "Full Composition",
-          prompt: `${promptObj.main}, digital concept art, cinematic composition, high detail --seed ${seedBase}`
+          tag: "Study 1 • Composition & Form",
+          desc: `Full scene study of ${query}`,
+          prompt: `${query}, visual concept art, strong focal point composition, masterwork painting --seed ${seedBase}`
         },
         {
-          type: "Study 2 • Lighting & Atmosphere",
-          label: "Lighting Mood",
-          prompt: `Volumetric lighting study of ${promptObj.main}, dramatic ${promptObj.palette}, atmospheric depth --seed ${seedBase + 1}`
+          tag: "Study 2 • Detail & Material Texture",
+          desc: `Close-up texture and details of ${query}`,
+          prompt: `Macro detail study of ${query}, intricate textures, materials, high definition concept reference --seed ${seedBase + 1}`
         },
         {
-          type: "Study 3 • Prop / Macro Detail",
-          label: "Object & Texture Focus",
-          prompt: `Close-up macro detail of ${promptObj.detail || promptObj.main}, material textures, 8k concept art --seed ${seedBase + 2}`
-        },
-        {
-          type: "Study 4 • Environment & Space",
-          label: "Interior / Background",
-          prompt: `Environment concept art: ${promptObj.interior || promptObj.main}, wide establishing angle, detailed background --seed ${seedBase + 3}`
-        },
-        {
-          type: "Study 5 • Alternate Palette",
-          label: "Color & Form Study",
-          prompt: `Stylized art study of ${promptObj.main}, ${promptObj.style}, masterwork digital painting --seed ${seedBase + 4}`
+          tag: "Study 3 • Lighting & Color Mood",
+          desc: `Atmospheric lighting and palette for ${query}`,
+          prompt: `Dramatic lighting and evocative atmosphere study of ${query}, cinematic lighting, color mood study --seed ${seedBase + 2}`
         }
       ];
 
+      // Insert Skeletons
+      container.innerHTML = studies.map(() => `
+        <div class="ref-card">
+          <div class="skeleton"></div>
+        </div>
+      `).join("");
+
       let loadedCount = 0;
 
+      // Render 3 Images
+      container.innerHTML = "";
       studies.forEach((study) => {
         const card = document.createElement("div");
         card.className = "ref-card";
 
         const skeleton = document.createElement("div");
-        skeleton.className = "skeleton-loader";
+        skeleton.className = "skeleton";
         card.appendChild(skeleton);
 
-        // Generate dynamic high-res concept art for each perspective
-        const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(study.prompt)}?width=800&height=600&nologo=true`;
-
         const img = document.createElement("img");
-        img.alt = study.label;
+        const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(study.prompt)}?width=800&height=560&nologo=true`;
 
         img.onload = () => {
           skeleton.remove();
@@ -462,20 +507,20 @@
         };
 
         img.onerror = () => {
-          // Reliable fallback if connection stumbles
           skeleton.remove();
-          img.src = `https://picsum.photos/seed/${encodeURIComponent(study.label)}/700/500`;
+          img.src = `https://picsum.photos/seed/${encodeURIComponent(study.desc)}/800/560`;
           img.classList.add("loaded");
         };
 
         img.src = imgUrl;
+        img.alt = study.desc;
         card.appendChild(img);
 
         const label = document.createElement("div");
         label.className = "ref-label";
         label.innerHTML = `
-          <span class="study-type">${study.type}</span>
-          ${study.label}
+          <span class="study-tag">${study.tag}</span>
+          ${study.desc}
         `;
         card.appendChild(label);
 
@@ -488,50 +533,28 @@
       });
     }
 
-    // Initial Load
-    renderPrompt(activePrompt);
+    // Set Date
+    const today = new Date();
+    document.getElementById("currentDate").textContent = today.toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" });
 
-    // Roll New Prompt
-    document.getElementById("btnRoll").onclick = () => {
-      const idx = Math.floor(Math.random() * CURATED_PROMPTS.length);
-      activePrompt = CURATED_PROMPTS[idx];
-      renderPrompt(activePrompt);
-    };
+    // Initial Roll
+    currentWords = generateSmartWords();
+    renderUI();
 
-    // Toggle Custom Input Drawer
-    const customBox = document.getElementById("customInputBox");
-    document.getElementById("btnToggleCustom").onclick = () => {
-      customBox.classList.toggle("active");
-      if (customBox.classList.contains("active")) {
-        document.getElementById("customInput").focus();
-      }
-    };
-
-    // Submit Custom Prompt
-    document.getElementById("btnSubmitCustom").onclick = () => {
-      const val = document.getElementById("customInput").value.trim();
-      if (!val) return;
-      activePrompt = {
-        main: val,
-        style: "Custom Style",
-        palette: "Vibrant Lighting",
-        detail: `key props and close-up textures from ${val}`,
-        interior: `environment and space of ${val}`
-      };
-      customBox.classList.remove("active");
-      renderPrompt(activePrompt);
+    // Reroll Button: "No likey :("
+    document.getElementById("btnReroll").onclick = () => {
+      currentWords = generateSmartWords();
+      renderUI();
     };
 
     // Native iOS Share
     document.getElementById("btnShare").onclick = async () => {
+      const shareText = `Art Prompt Words: ${currentWords.join(" • ")}`;
       if (navigator.share) {
-        await navigator.share({
-          title: "Art Prompt",
-          text: activePrompt.main,
-        });
+        await navigator.share({ title: "Smart Art Prompt", text: shareText });
       } else {
-        navigator.clipboard.writeText(activePrompt.main);
-        alert("Prompt copied to clipboard!");
+        navigator.clipboard.writeText(shareText);
+        alert("Prompt words copied to clipboard!");
       }
     };
   </script>
