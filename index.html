@@ -104,7 +104,7 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       padding: 10px 14px;
       border-radius: 14px;
-      font-size: 1.2rem;
+      font-size: 1.18rem;
       font-weight: 800;
       letter-spacing: -0.01em;
       color: #fff;
@@ -121,6 +121,12 @@
       border-radius: 6px;
       font-weight: 600;
       text-transform: uppercase;
+    }
+
+    .word-category.style-tag {
+      color: #fbcfe8;
+      background: rgba(236, 72, 153, 0.25);
+      border: 1px solid rgba(236, 72, 153, 0.3);
     }
 
     .ref-btn-section-label {
@@ -378,10 +384,23 @@
 
   <script>
     // ==========================================
-    // 6 EXPANDED CURATED BUCKETS (500+ Words)
+    // 7 CURATED BUCKETS (Includes Themes & Styles)
     // ==========================================
     const BUCKETS = {
-      // 1. Archetypes & Figures
+      // 1. Themes & Stylistic Movements
+      themes: [
+        "Sci-Fi", "Cyberpunk", "Steampunk", "Solarpunk", "Fantasy", "Dark-Fantasy",
+        "High-Fantasy", "Grimdark", "Post-Apocalyptic", "Biopunk", "Dieselpunk",
+        "Atompunk", "Space-Opera", "Mecha", "Retro-Futurism", "Art-Nouveau",
+        "Art-Deco", "Baroque", "Rococo", "Gothic", "Bauhaus", "Brutalism",
+        "Surrealism", "Noir", "Vaporwave", "Synthwave", "Ukiyo-e", "Impressionism",
+        "Pre-Raphaelite", "Lovecraftian", "Eldritch", "Folk-Horror", "Afrofuturism",
+        "Liminal", "Psychedelic", "Minimalist", "Industrial", "Cottagecore", "Chiaroscuro",
+        "Constructivism", "Fairy-Tale", "Mythological", "Romanticism", "Suprematism",
+        "Cassette-Futurism", "Sword-and-Sorcery", "Solar-Gothic", "Cyber-Noir"
+      ],
+
+      // 2. Archetypes & Figures
       archetypes: [
         "Alchemist", "Falconer", "Diver", "Cartographer", "Beekeeper", "Hermit", "Samurai",
         "Astronaut", "Marionette", "Gargoyle", "Clockmaker", "Monk", "Blacksmith", "Miner",
@@ -389,70 +408,51 @@
         "Jester", "Centurion", "Gladiator", "Archer", "Bard", "Shaman", "Druid",
         "Botanist", "Navigator", "Glassblower", "Tinkerer", "Astronomer", "Geologist",
         "Executioner", "Shepherd", "Potter", "Engraver", "Pilgrim", "Warlock", "Necromancer",
-        "Paladin", "Herbalist", "Corsair", "Squire", "Librarian", "Sentinel", "Locksmith",
-        "Archivist", "Puppeteer", "Watchman", "Apothecary", "Prospector", "Trappers",
-        "Woodcarver", "Taxidermist", "Sailor", "Knight", "Illusionist", "Archaeologist",
-        "Blackpowder", "Gravekeeper", "Sexton", "Foundryman", "Mason", "Foundling"
+        "Paladin", "Herbalist", "Corsair", "Squire", "Librarian", "Sentinel", "Locksmith"
       ],
 
-      // 2. Fauna & Creatures
+      // 3. Fauna & Creatures
       creatures: [
         "Nautilus", "Axolotl", "Pangolin", "Jellyfish", "Chameleon", "Manta", "Raven",
         "Beetle", "Dragonfly", "Scorpion", "Octopus", "Owl", "Whale", "Moth", "Salamander",
         "Seahorse", "Viper", "Barnacle", "Stag", "Barracuda", "Heron", "Armadillo",
         "Pelican", "Peacock", "Crab", "Firefly", "Tortoise", "Falcon", "Lynx", "Badger",
         "Otter", "Iguana", "Stingray", "Squid", "Lobster", "Caterpillar", "Cicada",
-        "Mantis", "Toad", "Cuttlefish", "Crow", "Vulture", "Porcupine", "Walrus", "Narwhal",
-        "Bat", "Bison", "Ibex", "Chamois", "Gannet", "Albatross", "Sturgeon", "Lamprey",
-        "Eel", "Moray", "Platypus", "Lemur", "Antelope", "Wolf", "Boar", "Osprey"
+        "Mantis", "Toad", "Cuttlefish", "Crow", "Vulture", "Porcupine", "Walrus", "Narwhal"
       ],
 
-      // 3. Artifacts, Objects & Architecture
+      // 4. Artifacts, Objects & Architecture
       objects: [
         "Lighthouse", "Astrolabe", "Locomotive", "Monolith", "Sarcophagus", "Windmill",
         "Pagoda", "Reliquary", "Gargoyle", "Greenhouse", "Bathhouse", "Sundial",
         "Catapult", "Anvil", "Telescope", "Belfry", "Crucible", "Aqueduct", "Carillon",
         "Viaduct", "Archway", "Crypt", "Foundry", "Cenotaph", "Armillary", "Hourglass",
         "Compass", "Lantern", "Sextant", "Cauldron", "Tapestry", "Mosaic", "Kiln",
-        "Loom", "Millstone", "Censer", "Gallows", "Wellspring", "Drawbridge", "Portcullis",
-        "Silo", "Spire", "Rotunda", "Colonnade", "Belltower", "Clocktower", "Catacomb",
-        "Pergola", "Gazebo", "Fountain", "Obelisk", "Totem", "Altar", "Shrine", "Mausoleum",
-        "Caravan", "Gondola", "Dirigible", "Rowboat", "Anchor", "Figurehead", "Cannon"
+        "Loom", "Millstone", "Censer", "Wellspring", "Drawbridge", "Portcullis", "Spire"
       ],
 
-      // 4. Materials, Textures & Elements
+      // 5. Materials, Textures & Elements
       materials: [
         "Obsidian", "Verdigris", "Basalt", "Porcelain", "Terracotta", "Crystalline",
         "Bioluminescent", "Corroded", "Gilded", "Molten", "Driftwood", "Amber", "Pumice",
         "Malachite", "Quicksilver", "Lapis", "Tallow", "Pewter", "Alabaster", "Bronze",
-        "Brass", "Copper", "Castiron", "Pyrite", "Motherofpearl", "Onyx", "Flint",
-        "Chert", "Slate", "Marble", "Limestone", "Sandstone", "Granite", "Cobalt",
-        "Brimstone", "Cinnabar", "Feldspar", "Mica", "Gypsum", "Talc", "Serpentine",
-        "Asbestos", "Charcoal", "Petrified", "Fossilized", "Enamel", "Sgraffito",
-        "Damascene", "Velvet", "Burlap", "Linen", "Hemp", "Leather", "Parchment",
-        "Vellum", "Wax", "Resin", "Beeswax", "Gutta-percha", "Celluloid", "Tar"
+        "Brass", "Copper", "Pyrite", "Motherofpearl", "Onyx", "Flint", "Slate", "Marble",
+        "Limestone", "Sandstone", "Granite", "Cobalt", "Brimstone", "Cinnabar", "Feldspar"
       ],
 
-      // 5. Environments, Biomes & Landforms
+      // 6. Environments & Biomes
       environments: [
         "Cenote", "Caldera", "Mangrove", "Fjord", "Cathedral", "Archipelago", "Permafrost",
         "Trench", "Saltflat", "Canyon", "Glacier", "Wetland", "Steppe", "Taiga",
         "Badlands", "Atoll", "Gorge", "Ravine", "Delta", "Oasis", "Estuary",
-        "Lagoon", "Geyser", "Savanna", "Moorland", "Heath", "Dune", "Chasm",
-        "Quarry", "Crater", "Fen", "Bog", "Marsh", "Swamp", "Plateau", "Mesa",
-        "Butte", "Sinkhole", "Abyss", "Reef", "Sandbar", "Shoal", "Volcano",
-        "Moraine", "Tundra", "Rainforest", "Woodland", "Orchard", "Vineyard",
-        "Terrace", "Grotto", "Cavern", "Cave", "Cliffside", "Headland", "Peninsula"
+        "Lagoon", "Geyser", "Savanna", "Moorland", "Dune", "Chasm", "Quarry", "Crater"
       ],
 
-      // 6. Atmospheres, Weather & Phenomena
+      // 7. Atmospheres & Phenomena
       atmospheres: [
         "Eclipse", "Monsoon", "Aurora", "Mirage", "Sirocco", "Solstice", "Twilight",
         "Blizzard", "Haze", "Tempest", "Afterglow", "Downpour", "Fog", "Smog",
-        "Rainbow", "Sundog", "Squall", "Drizzle", "Gale", "Cyclone", "Tornado",
-        "Duststorm", "Thunderhead", "Frostwork", "Rime", "Dew", "Steam", "Vapor",
-        "Heatwave", "Noctilucent", "Equinox", "Penumbra", "Boreal", "Moonbow",
-        "St.Elmo's", "Zodiacal", "Wildfire", "Ashfall", "Calm", "Squall", "Overcast"
+        "Rainbow", "Sundog", "Squall", "Drizzle", "Gale", "Cyclone", "Tornado"
       ]
     };
 
@@ -461,37 +461,37 @@
     // Smart Generator: Combines buckets into evocative, paintable 2 or 3 word sets
     function generateSmartWords() {
       const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-      const isTriplet = Math.random() > 0.35; // 65% chance of 3 words, 35% chance of 2
+      const isTriplet = Math.random() > 0.3; // 70% chance of 3 words, 30% chance of 2
 
-      // Archetypal combination patterns
+      // Combinatorial patterns that feature themes, subjects, and environments
       const patterns = [
-        // Pattern A: Material + Creature + Environment (e.g. Obsidian • Nautilus • Cenote)
+        // Pattern 1: Theme + Creature + Environment (e.g. Cyberpunk • Nautilus • Cenote)
         () => [
-          { word: pick(BUCKETS.materials), category: "Material" },
+          { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
           { word: pick(BUCKETS.creatures), category: "Creature" },
           { word: pick(BUCKETS.environments), category: "Biome" }
         ],
-        // Pattern B: Figure + Artifact + Atmosphere (e.g. Falconer • Astrolabe • Mirage)
+        // Pattern 2: Theme + Material + Object (e.g. Art-Nouveau • Obsidian • Lighthouse)
         () => [
+          { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
+          { word: pick(BUCKETS.materials), category: "Material" },
+          { word: pick(BUCKETS.objects), category: "Object" }
+        ],
+        // Pattern 3: Theme + Figure + Atmosphere (e.g. Solarpunk • Falconer • Mirage)
+        () => [
+          { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
           { word: pick(BUCKETS.archetypes), category: "Figure" },
-          { word: pick(BUCKETS.objects), category: "Object" },
           { word: pick(BUCKETS.atmospheres), category: "Atmosphere" }
         ],
-        // Pattern C: Material + Object + Environment (e.g. Porcelain • Lighthouse • Fjord)
+        // Pattern 4: Theme + Figure / Creature (2-word, e.g. Steampunk • Beekeeper)
+        () => [
+          { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
+          { word: pick(BUCKETS.archetypes), category: "Figure" },
+          { word: pick(BUCKETS.objects), category: "Object" }
+        ],
+        // Pattern 5: Material + Creature + Biome (Classic organic, e.g. Gilded • Axolotl • Lagoon)
         () => [
           { word: pick(BUCKETS.materials), category: "Material" },
-          { word: pick(BUCKETS.objects), category: "Object" },
-          { word: pick(BUCKETS.environments), category: "Biome" }
-        ],
-        // Pattern D: Creature + Object + Atmosphere (e.g. Jellyfish • Belfry • Aurora)
-        () => [
-          { word: pick(BUCKETS.creatures), category: "Creature" },
-          { word: pick(BUCKETS.objects), category: "Object" },
-          { word: pick(BUCKETS.atmospheres), category: "Phenomenon" }
-        ],
-        // Pattern E: Figure + Creature + Biome (e.g. Diver • Manta • Trench)
-        () => [
-          { word: pick(BUCKETS.archetypes), category: "Figure" },
           { word: pick(BUCKETS.creatures), category: "Creature" },
           { word: pick(BUCKETS.environments), category: "Biome" }
         ]
@@ -507,7 +507,7 @@
       wordsContainer.innerHTML = currentWordsData.map((item) => `
         <div class="word-chip">
           <span>${item.word}</span>
-          <span class="word-category">${item.category}</span>
+          <span class="word-category ${item.isStyle ? 'style-tag' : ''}">${item.category}</span>
         </div>
       `).join("");
 
@@ -523,7 +523,7 @@
       // Combined Concept Button
       const combinedQuery = currentWordsData.map(d => d.word).join(" ");
       buttonsHtml += `
-        <button class="btn-ref btn-ref-combined" onclick="fetchCombinedConcept('${combinedQuery}')">
+        <button class="btn-ref btn-ref-combined" onclick="fetchCombinedConcept()">
           <span>✨ Generate combined reference (${currentWordsData.length} words)</span>
           <span>→</span>
         </button>
@@ -557,7 +557,9 @@
       `;
 
       try {
-        const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(word)}&gsrnamespace=6&gsrlimit=20&prop=imageinfo&iiprop=url|mime&iiurlwidth=800&format=json&origin=*`;
+        // Clean up hyphens for Wikimedia searches (e.g. "Art-Nouveau" -> "Art Nouveau")
+        const searchTerm = word.replace(/-/g, " ");
+        const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchTerm)}&gsrnamespace=6&gsrlimit=24&prop=imageinfo&iiprop=url|mime&iiurlwidth=800&format=json&origin=*`;
         const res = await fetch(url);
         const data = await res.json();
 
@@ -581,7 +583,7 @@
           }
         }
 
-        // Reliable fallback if term was exceptionally rare
+        // Safe fallback
         while (photos.length < 3) {
           photos.push({
             src: `https://picsum.photos/seed/${encodeURIComponent(word + photos.length)}/800/600`,
@@ -599,12 +601,16 @@
     }
 
     // --- 2. Combined Concept Synthesis ---
-    function fetchCombinedConcept(combinedQuery) {
+    function fetchCombinedConcept() {
       const container = document.getElementById("galleryContainer");
       const statusLabel = document.getElementById("statusLabel");
       const galleryTitle = document.getElementById("galleryTitle");
 
-      galleryTitle.textContent = `Combined: ${combinedQuery}`;
+      const combinedText = currentWordsData.map(d => d.word.replace(/-/g, " ")).join(", ");
+      const styleItem = currentWordsData.find(d => d.isStyle);
+      const styleModifier = styleItem ? `in ${styleItem.word.replace(/-/g, " ")} visual aesthetic` : "masterwork concept art";
+
+      galleryTitle.textContent = `Combined: ${currentWordsData.map(d => d.word).join(" • ")}`;
       statusLabel.textContent = "Synthesizing 3 studies...";
 
       container.innerHTML = `
@@ -616,17 +622,17 @@
       const seedBase = Math.floor(Math.random() * 89999) + 1000;
       const studies = [
         {
-          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("epic concept art painting of " + combinedQuery + ", focal point composition, masterwork artstation")}?width=800&height=560&nologo=true&seed=${seedBase}`,
-          title: `Composition study: ${combinedQuery}`,
+          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("epic concept art painting fusing " + combinedText + ", " + styleModifier + ", cinematic focal point, high detail, artstation")}?width=800&height=560&nologo=true&seed=${seedBase}`,
+          title: `Scene composition: ${combinedText}`,
           badge: "✨ Concept Study 1 • Form & Composition"
         },
         {
-          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("macro detail and material texture of " + combinedQuery + ", high detail 8k concept art")}?width=800&height=560&nologo=true&seed=${seedBase + 1}`,
+          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("macro detail and material texture of " + combinedText + ", " + styleModifier + ", 8k concept reference")}?width=800&height=560&nologo=true&seed=${seedBase + 1}`,
           title: `Material & texture study`,
           badge: "✨ Concept Study 2 • Detail & Texture"
         },
         {
-          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("cinematic lighting and atmosphere of " + combinedQuery + ", dramatic color harmony")}?width=800&height=560&nologo=true&seed=${seedBase + 2}`,
+          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("cinematic lighting atmosphere of " + combinedText + ", " + styleModifier + ", dramatic color study")}?width=800&height=560&nologo=true&seed=${seedBase + 2}`,
           title: `Atmospheric lighting & palette`,
           badge: "✨ Concept Study 3 • Lighting & Mood"
         }
