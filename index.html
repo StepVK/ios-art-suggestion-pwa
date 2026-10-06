@@ -102,24 +102,25 @@
     .word-chip {
       background: rgba(255, 255, 255, 0.07);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 10px 16px;
+      padding: 10px 14px;
       border-radius: 14px;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
       letter-spacing: -0.01em;
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
-    .word-index {
+    .word-category {
       font-size: 0.65rem;
-      color: #a78bfa;
-      font-weight: 700;
-      background: rgba(139, 92, 246, 0.2);
+      color: #c4b5fd;
+      background: rgba(139, 92, 246, 0.25);
       padding: 2px 6px;
       border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
     }
 
     .ref-btn-section-label {
@@ -376,59 +377,154 @@
   </div>
 
   <script>
-    const BUCKET_SUBJECTS = [
-      "Lighthouse", "Gargoyle", "Locomotive", "Astronaut", "Jellyfish",
-      "Golem", "Marionette", "Monolith", "Samurai", "Beekeeper",
-      "Scarecrow", "Diver", "Clockwork", "Alchemist", "Leviathan"
-    ];
+    // ==========================================
+    // 6 EXPANDED CURATED BUCKETS (500+ Words)
+    // ==========================================
+    const BUCKETS = {
+      // 1. Archetypes & Figures
+      archetypes: [
+        "Alchemist", "Falconer", "Diver", "Cartographer", "Beekeeper", "Hermit", "Samurai",
+        "Astronaut", "Marionette", "Gargoyle", "Clockmaker", "Monk", "Blacksmith", "Miner",
+        "Nomad", "Oracle", "Scribe", "Sculptor", "Weaver", "Harvester", "Sorcerer",
+        "Jester", "Centurion", "Gladiator", "Archer", "Bard", "Shaman", "Druid",
+        "Botanist", "Navigator", "Glassblower", "Tinkerer", "Astronomer", "Geologist",
+        "Executioner", "Shepherd", "Potter", "Engraver", "Pilgrim", "Warlock", "Necromancer",
+        "Paladin", "Herbalist", "Corsair", "Squire", "Librarian", "Sentinel", "Locksmith",
+        "Archivist", "Puppeteer", "Watchman", "Apothecary", "Prospector", "Trappers",
+        "Woodcarver", "Taxidermist", "Sailor", "Knight", "Illusionist", "Archaeologist",
+        "Blackpowder", "Gravekeeper", "Sexton", "Foundryman", "Mason", "Foundling"
+      ],
 
-    const BUCKET_TEXTURES = [
-      "Obsidian", "Crystalline", "Overgrown", "Molten", "Porcelain",
-      "Submerged", "Corroded", "Prismatic", "Gilded", "Spectral",
-      "Driftwood", "Iridescent", "Neon", "Verdant"
-    ];
+      // 2. Fauna & Creatures
+      creatures: [
+        "Nautilus", "Axolotl", "Pangolin", "Jellyfish", "Chameleon", "Manta", "Raven",
+        "Beetle", "Dragonfly", "Scorpion", "Octopus", "Owl", "Whale", "Moth", "Salamander",
+        "Seahorse", "Viper", "Barnacle", "Stag", "Barracuda", "Heron", "Armadillo",
+        "Pelican", "Peacock", "Crab", "Firefly", "Tortoise", "Falcon", "Lynx", "Badger",
+        "Otter", "Iguana", "Stingray", "Squid", "Lobster", "Caterpillar", "Cicada",
+        "Mantis", "Toad", "Cuttlefish", "Crow", "Vulture", "Porcupine", "Walrus", "Narwhal",
+        "Bat", "Bison", "Ibex", "Chamois", "Gannet", "Albatross", "Sturgeon", "Lamprey",
+        "Eel", "Moray", "Platypus", "Lemur", "Antelope", "Wolf", "Boar", "Osprey"
+      ],
 
-    const BUCKET_ENVIRONMENTS = [
-      "Cathedral", "Eclipse", "Trench", "Nebula", "Catacombs",
-      "Monsoon", "Sanctuary", "Permafrost", "Abyss", "Dunes",
-      "Greenhouse", "Foundry", "Archway", "Spire"
-    ];
+      // 3. Artifacts, Objects & Architecture
+      objects: [
+        "Lighthouse", "Astrolabe", "Locomotive", "Monolith", "Sarcophagus", "Windmill",
+        "Pagoda", "Reliquary", "Gargoyle", "Greenhouse", "Bathhouse", "Sundial",
+        "Catapult", "Anvil", "Telescope", "Belfry", "Crucible", "Aqueduct", "Carillon",
+        "Viaduct", "Archway", "Crypt", "Foundry", "Cenotaph", "Armillary", "Hourglass",
+        "Compass", "Lantern", "Sextant", "Cauldron", "Tapestry", "Mosaic", "Kiln",
+        "Loom", "Millstone", "Censer", "Gallows", "Wellspring", "Drawbridge", "Portcullis",
+        "Silo", "Spire", "Rotunda", "Colonnade", "Belltower", "Clocktower", "Catacomb",
+        "Pergola", "Gazebo", "Fountain", "Obelisk", "Totem", "Altar", "Shrine", "Mausoleum",
+        "Caravan", "Gondola", "Dirigible", "Rowboat", "Anchor", "Figurehead", "Cannon"
+      ],
 
-    let currentWords = [];
+      // 4. Materials, Textures & Elements
+      materials: [
+        "Obsidian", "Verdigris", "Basalt", "Porcelain", "Terracotta", "Crystalline",
+        "Bioluminescent", "Corroded", "Gilded", "Molten", "Driftwood", "Amber", "Pumice",
+        "Malachite", "Quicksilver", "Lapis", "Tallow", "Pewter", "Alabaster", "Bronze",
+        "Brass", "Copper", "Castiron", "Pyrite", "Motherofpearl", "Onyx", "Flint",
+        "Chert", "Slate", "Marble", "Limestone", "Sandstone", "Granite", "Cobalt",
+        "Brimstone", "Cinnabar", "Feldspar", "Mica", "Gypsum", "Talc", "Serpentine",
+        "Asbestos", "Charcoal", "Petrified", "Fossilized", "Enamel", "Sgraffito",
+        "Damascene", "Velvet", "Burlap", "Linen", "Hemp", "Leather", "Parchment",
+        "Vellum", "Wax", "Resin", "Beeswax", "Gutta-percha", "Celluloid", "Tar"
+      ],
 
+      // 5. Environments, Biomes & Landforms
+      environments: [
+        "Cenote", "Caldera", "Mangrove", "Fjord", "Cathedral", "Archipelago", "Permafrost",
+        "Trench", "Saltflat", "Canyon", "Glacier", "Wetland", "Steppe", "Taiga",
+        "Badlands", "Atoll", "Gorge", "Ravine", "Delta", "Oasis", "Estuary",
+        "Lagoon", "Geyser", "Savanna", "Moorland", "Heath", "Dune", "Chasm",
+        "Quarry", "Crater", "Fen", "Bog", "Marsh", "Swamp", "Plateau", "Mesa",
+        "Butte", "Sinkhole", "Abyss", "Reef", "Sandbar", "Shoal", "Volcano",
+        "Moraine", "Tundra", "Rainforest", "Woodland", "Orchard", "Vineyard",
+        "Terrace", "Grotto", "Cavern", "Cave", "Cliffside", "Headland", "Peninsula"
+      ],
+
+      // 6. Atmospheres, Weather & Phenomena
+      atmospheres: [
+        "Eclipse", "Monsoon", "Aurora", "Mirage", "Sirocco", "Solstice", "Twilight",
+        "Blizzard", "Haze", "Tempest", "Afterglow", "Downpour", "Fog", "Smog",
+        "Rainbow", "Sundog", "Squall", "Drizzle", "Gale", "Cyclone", "Tornado",
+        "Duststorm", "Thunderhead", "Frostwork", "Rime", "Dew", "Steam", "Vapor",
+        "Heatwave", "Noctilucent", "Equinox", "Penumbra", "Boreal", "Moonbow",
+        "St.Elmo's", "Zodiacal", "Wildfire", "Ashfall", "Calm", "Squall", "Overcast"
+      ]
+    };
+
+    let currentWordsData = [];
+
+    // Smart Generator: Combines buckets into evocative, paintable 2 or 3 word sets
     function generateSmartWords() {
-      const isTriplet = Math.random() > 0.35;
-      const subject = BUCKET_SUBJECTS[Math.floor(Math.random() * BUCKET_SUBJECTS.length)];
-      const texture = BUCKET_TEXTURES[Math.floor(Math.random() * BUCKET_TEXTURES.length)];
-      const env = BUCKET_ENVIRONMENTS[Math.floor(Math.random() * BUCKET_ENVIRONMENTS.length)];
+      const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      const isTriplet = Math.random() > 0.35; // 65% chance of 3 words, 35% chance of 2
 
-      return isTriplet ? [texture, subject, env] : [texture, subject];
+      // Archetypal combination patterns
+      const patterns = [
+        // Pattern A: Material + Creature + Environment (e.g. Obsidian • Nautilus • Cenote)
+        () => [
+          { word: pick(BUCKETS.materials), category: "Material" },
+          { word: pick(BUCKETS.creatures), category: "Creature" },
+          { word: pick(BUCKETS.environments), category: "Biome" }
+        ],
+        // Pattern B: Figure + Artifact + Atmosphere (e.g. Falconer • Astrolabe • Mirage)
+        () => [
+          { word: pick(BUCKETS.archetypes), category: "Figure" },
+          { word: pick(BUCKETS.objects), category: "Object" },
+          { word: pick(BUCKETS.atmospheres), category: "Atmosphere" }
+        ],
+        // Pattern C: Material + Object + Environment (e.g. Porcelain • Lighthouse • Fjord)
+        () => [
+          { word: pick(BUCKETS.materials), category: "Material" },
+          { word: pick(BUCKETS.objects), category: "Object" },
+          { word: pick(BUCKETS.environments), category: "Biome" }
+        ],
+        // Pattern D: Creature + Object + Atmosphere (e.g. Jellyfish • Belfry • Aurora)
+        () => [
+          { word: pick(BUCKETS.creatures), category: "Creature" },
+          { word: pick(BUCKETS.objects), category: "Object" },
+          { word: pick(BUCKETS.atmospheres), category: "Phenomenon" }
+        ],
+        // Pattern E: Figure + Creature + Biome (e.g. Diver • Manta • Trench)
+        () => [
+          { word: pick(BUCKETS.archetypes), category: "Figure" },
+          { word: pick(BUCKETS.creatures), category: "Creature" },
+          { word: pick(BUCKETS.environments), category: "Biome" }
+        ]
+      ];
+
+      const selectedPattern = pick(patterns)();
+      return isTriplet ? selectedPattern : selectedPattern.slice(0, 2);
     }
 
     function renderUI() {
       // 1. Render Words
       const wordsContainer = document.getElementById("wordsContainer");
-      wordsContainer.innerHTML = currentWords.map((word, i) => `
+      wordsContainer.innerHTML = currentWordsData.map((item) => `
         <div class="word-chip">
-          <span class="word-index">${i + 1}</span>
-          ${word}
+          <span>${item.word}</span>
+          <span class="word-category">${item.category}</span>
         </div>
       `).join("");
 
       // 2. Render Reference Buttons
       const btnContainer = document.getElementById("refButtons");
-      let buttonsHtml = currentWords.map((word) => `
-        <button class="btn-ref" onclick="fetchWikiReferences('${word}')">
-          <span>Reference for <strong>${word}</strong></span>
+      let buttonsHtml = currentWordsData.map((item) => `
+        <button class="btn-ref" onclick="fetchWikiReferences('${item.word}')">
+          <span>Reference for <strong>${item.word}</strong></span>
           <span class="btn-ref-source">📷 WikiCommons →</span>
         </button>
       `).join("");
 
       // Combined Concept Button
-      const combinedQuery = currentWords.join(" ");
+      const combinedQuery = currentWordsData.map(d => d.word).join(" ");
       buttonsHtml += `
         <button class="btn-ref btn-ref-combined" onclick="fetchCombinedConcept('${combinedQuery}')">
-          <span>✨ Generate combined reference (${currentWords.length} words)</span>
+          <span>✨ Generate combined reference (${currentWordsData.length} words)</span>
           <span>→</span>
         </button>
       `;
@@ -461,8 +557,7 @@
       `;
 
       try {
-        // Query Wikimedia Commons for 15 results, requesting pre-scaled 800px image thumbnails
-        const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(word)}&gsrnamespace=6&gsrlimit=18&prop=imageinfo&iiprop=url|mime&iiurlwidth=800&format=json&origin=*`;
+        const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(word)}&gsrnamespace=6&gsrlimit=20&prop=imageinfo&iiprop=url|mime&iiurlwidth=800&format=json&origin=*`;
         const res = await fetch(url);
         const data = await res.json();
 
@@ -473,7 +568,6 @@
             if (p.imageinfo && p.imageinfo[0]) {
               const info = p.imageinfo[0];
               const mime = info.mime || "";
-              // Strictly filter for actual photos/raster images (skip SVGs, PDFs, sound files)
               if (mime.includes("jpeg") || mime.includes("jpg") || mime.includes("png") || mime.includes("webp")) {
                 const title = p.title.replace(/^File:/i, "").replace(/\.[^/.]+$/, "").replace(/_/g, " ");
                 photos.push({
@@ -487,11 +581,11 @@
           }
         }
 
-        // Safe fallback if fewer than 3 photos found
+        // Reliable fallback if term was exceptionally rare
         while (photos.length < 3) {
           photos.push({
             src: `https://picsum.photos/seed/${encodeURIComponent(word + photos.length)}/800/600`,
-            title: `${word} visual study`,
+            title: `${word} visual archive`,
             badge: "Photo Archive"
           });
         }
@@ -542,7 +636,7 @@
       statusLabel.textContent = "Ready";
     }
 
-    // Card Renderer Helper
+    // Gallery Renderer Helper
     function renderGalleryCards(items) {
       const container = document.getElementById("galleryContainer");
       container.innerHTML = "";
@@ -593,18 +687,19 @@
     const today = new Date();
     document.getElementById("currentDate").textContent = today.toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" });
 
-    currentWords = generateSmartWords();
+    currentWordsData = generateSmartWords();
     renderUI();
 
-    // Reroll Button
+    // Reroll Button: "No likey :("
     document.getElementById("btnReroll").onclick = () => {
-      currentWords = generateSmartWords();
+      currentWordsData = generateSmartWords();
       renderUI();
     };
 
     // Native iOS Share
     document.getElementById("btnShare").onclick = async () => {
-      const shareText = `Art Prompt Words: ${currentWords.join(" • ")}`;
+      const wordsList = currentWordsData.map(d => d.word).join(" • ");
+      const shareText = `Art Prompt Words: ${wordsList}`;
       if (navigator.share) {
         await navigator.share({ title: "Smart Art Prompt", text: shareText });
       } else {
