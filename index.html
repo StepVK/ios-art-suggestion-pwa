@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PromptCanvas — Daily Art Prompt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <!-- iOS PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ArtPrompt">
+  <meta name="theme-color" content="#09090b">
+
+  <!-- Embedded Web App Manifest -->
+  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Art%20Prompt%20Daily%22%2C%22short_name%22%3A%22ArtPrompt%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%2309090b%22%7D">
+
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: rgba(24, 24, 27, 0.75);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent: #8b5cf6;
+      --accent-glow: rgba(139, 92, 246, 0.35);
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: calc(env(safe-area-inset-top) + 16px);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
+      padding-left: 18px;
+      padding-right: 18px;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .date-str {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Main Prompt Card */
+    .prompt-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .prompt-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px 10px;
+      border-radius: 8px;
+      color: var(--text-muted);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 14px;
+      font-weight: 600;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      color: white;
+      padding: 13px 18px;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+    }
+
+    /* Reference Gallery */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .gallery .ref-card:first-child {
+      grid-column: span 2;
+      height: 230px;
+    }
+
+    .ref-card {
+      position: relative;
+      height: 150px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #18181b;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .ref-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .ref-card img.loaded {
+      opacity: 1;
+    }
+
+    .ref-card .caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px 10px;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+      font-size: 0.68rem;
+      color: #e4e4e7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Skeleton Loading State */
+    .skeleton {
+      animation: pulse 1.5s infinite ease-in-out;
+      background: linear-gradient(90deg, #18181b 25%, #27272a 50%, #18181b 75%);
+      background-size: 200% 100%;
+    }
+
+    @keyframes pulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Lightbox Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal img {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="badge">Art Prompt</span>
+    <span class="date-str" id="currentDate">Today</span>
+  </header>
+
+  <!-- Prompt Section -->
+  <main>
+    <div class="prompt-card">
+      <div class="prompt-title" id="promptText">Generating prompt...</div>
+      <div class="tags" id="promptTags"></div>
+      
+      <div class="actions">
+        <button class="btn-primary" id="btnRoll">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Roll New
+        </button>
+
+        <button class="btn-secondary" id="btnShare" aria-label="Share">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 5 References Section -->
+    <div class="section-header">
+      <h2 class="section-title">Visual References (5)</h2>
+      <span class="date-str" id="statusLabel">Fetching...</span>
+    </div>
+
+    <div class="gallery" id="galleryContainer">
+      <div class="ref-card skeleton"></div>
+      <div class="ref-card skeleton"></div>
+      <div class="ref-card skeleton"></div>
+      <div class="ref-card skeleton"></div>
+      <div class="ref-card skeleton"></div>
+    </div>
+  </main>
+
+  <!-- Fullscreen Image Lightbox -->
+  <div class="modal" id="modal" onclick="this.classList.remove('active')">
+    <img id="modalImg" src="" alt="Fullscreen preview">
+  </div>
+
+  <script>
+    // Prompt Generator Data
+    const SUBJECTS = [
+      "A solitary greenhouse floating in mist",
+      "A mechanical knight resting in a sunlit meadow",
+      "A cozy ramen bar in a neon cyberpunk alley",
+      "An overgrown celestial library in ruins",
+      "A nomad traveler guiding a bioluminescent beast",
+      "An underwater gothic cathedral with sunlight shafts",
+      "A train station at the edge of a desert canyon",
+      "A witch’s workshop filled with glowing glass jars",
+      "A futuristic cafe in Tokyo during rain"
+    ];
+
+    const STYLES = ["Studio Ghibli aesthetic", "Dramatic Chiaroscuro", "Cyberpunk synthwave", "Concept art", "Moody gouache wash", "Retro sci-fi"];
+    const LIGHTING = ["Golden hour light", "Moonlit blue atmosphere", "Bioluminescent rim light", "Warm candle fire", "Ethereal fog haze"];
+    const SEARCH_KEYWORDS = ["landscape", "architecture", "cyberpunk", "botanical", "ruins", "cathedral", "statue", "concept art", "tokyo rain"];
+
+    // Date formatting
+    const today = new Date();
+    document.getElementById("currentDate").textContent = today.toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" });
+
+    // Deterministic or Random Prompt
+    function generatePrompt(randomize = false) {
+      const seed = randomize ? Math.floor(Math.random() * 1000) : (today.getFullYear() * 1000 + today.getMonth() * 31 + today.getDate());
+      const s = SUBJECTS[seed % SUBJECTS.length];
+      const st = STYLES[(seed + 1) % STYLES.length];
+      const l = LIGHTING[(seed + 2) % LIGHTING.length];
+      const kw = SEARCH_KEYWORDS[seed % SEARCH_KEYWORDS.length];
+
+      return {
+        text: `${s}, styled in ${st}, illuminated by ${l}.`,
+        tags: [st, l, "Art Reference"],
+        keyword: kw
+      };
+    }
+
+    let currentPrompt = generatePrompt(false);
+
+    function updatePromptUI(prompt) {
+      document.getElementById("promptText").textContent = prompt.text;
+      const tagsContainer = document.getElementById("promptTags");
+      tagsContainer.innerHTML = prompt.tags.map(t => `<span class="tag">${t}</span>`).join("");
+    }
+
+    // Pull 5 References from Wikimedia Commons (Free, no API key, CORS-friendly)
+    async function fetchReferences(keyword) {
+      const container = document.getElementById("galleryContainer");
+      const statusLabel = document.getElementById("statusLabel");
+      
+      // Skeleton placeholder
+      container.innerHTML = Array(5).fill('<div class="ref-card skeleton"></div>').join("");
+      statusLabel.textContent = "Fetching references...";
+
+      try {
+        const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(keyword)}&gsrlimit=12&prop=pageimages&pithumbsize=700&format=json&origin=*`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        let items = [];
+        if (data.query && data.query.pages) {
+          items = Object.values(data.query.pages)
+            .filter(p => p.thumbnail && p.thumbnail.source)
+            .slice(0, 5)
+            .map(p => ({
+              src: p.thumbnail.source,
+              title: p.title.replace(/^File:/, "").replace(/\.[^/.]+$/, "")
+            }));
+        }
+
+        // Fallback placeholder images if no images returned
+        while (items.length < 5) {
+          const id = 100 + items.length;
+          items.push({
+            src: `https://picsum.photos/seed/${keyword}${id}/600/600`,
+            title: `Reference ${items.length + 1}`
+          });
+        }
+
+        container.innerHTML = "";
+        items.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "ref-card";
+          card.innerHTML = `
+            <img src="${item.src}" alt="${item.title}" onload="this.classList.add('loaded')">
+            <div class="caption">${item.title}</div>
+          `;
+          card.onclick = () => {
+            document.getElementById("modalImg").src = item.src;
+            document.getElementById("modal").classList.add("active");
+          };
+          container.appendChild(card);
+        });
+
+        statusLabel.textContent = "Ready";
+      } catch (err) {
+        console.error(err);
+        statusLabel.textContent = "Error loading images";
+      }
+    }
+
+    // Initial Load
+    updatePromptUI(currentPrompt);
+    fetchReferences(currentPrompt.keyword);
+
+    // Roll New Action
+    document.getElementById("btnRoll").onclick = () => {
+      currentPrompt = generatePrompt(true);
+      updatePromptUI(currentPrompt);
+      fetchReferences(currentPrompt.keyword);
+    };
+
+    // Native iOS Share
+    document.getElementById("btnShare").onclick = async () => {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Art Prompt of the Day",
+          text: currentPrompt.text,
+        });
+      } else {
+        navigator.clipboard.writeText(currentPrompt.text);
+        alert("Prompt copied to clipboard!");
+      }
+    };
+  </script>
+</body>
+</html>
