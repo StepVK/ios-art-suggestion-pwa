@@ -20,7 +20,6 @@
       --card-bg: rgba(24, 24, 27, 0.85);
       --card-border: rgba(255, 255, 255, 0.1);
       --accent: #8b5cf6;
-      --accent-gradient: linear-gradient(135deg, #8b5cf6, #d946ef);
       --pinterest-color: #e60023;
       --text: #f4f4f5;
       --text-muted: #a1a1aa;
@@ -182,18 +181,7 @@
       font-weight: 500;
     }
 
-    .btn-ref-combined {
-      flex: 1;
-      background: var(--accent-gradient);
-      color: #fff;
-      padding: 12px 14px;
-      font-size: 0.92rem;
-      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
-      border: none;
-      justify-content: space-between;
-    }
-
-    /* Pinterest Action Button */
+    /* Pinterest Buttons */
     .btn-pinterest {
       width: 48px;
       background: rgba(230, 0, 35, 0.15);
@@ -205,10 +193,14 @@
       padding: 0;
     }
 
-    .btn-pinterest.combined-pin {
-      background: rgba(230, 0, 35, 0.25);
-      color: #fff;
-      border-color: rgba(230, 0, 35, 0.45);
+    .btn-pinterest-all {
+      background: rgba(230, 0, 35, 0.18);
+      border: 1px solid rgba(230, 0, 35, 0.4);
+      color: #ff4d6d;
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      justify-content: space-between;
+      margin-top: 2px;
     }
 
     /* Controls */
@@ -374,7 +366,7 @@
       <div class="prompt-subtitle">Visual Spark Words</div>
       <div class="words-container" id="wordsContainer"></div>
 
-      <div class="ref-btn-section-label">Generate Studies / Search Pinterest</div>
+      <div class="ref-btn-section-label">Verified Photos & Pinterest</div>
       <div class="ref-buttons" id="refButtons"></div>
 
       <div class="controls">
@@ -399,7 +391,7 @@
 
     <div class="gallery" id="galleryContainer">
       <div class="empty-state">
-        Select any button above to pull 3 references, or tap <strong>P ↗</strong> to open Pinterest boards.
+        Select any word above to view 3 verified photos from Wikimedia Commons, or tap <strong>P ↗</strong> to view community boards on Pinterest.
       </div>
     </div>
   </main>
@@ -411,7 +403,7 @@
 
   <script>
     // ==========================================
-    // 7 CURATED BUCKETS (Includes Themes & Styles)
+    // 7 CURATED BUCKETS (500+ Words)
     // ==========================================
     const BUCKETS = {
       // 1. Themes & Stylistic Movements
@@ -509,13 +501,13 @@
           { word: pick(BUCKETS.archetypes), category: "Figure" },
           { word: pick(BUCKETS.atmospheres), category: "Atmosphere" }
         ],
-        // Pattern 4: Theme + Figure / Creature (2-word, e.g. Steampunk • Beekeeper)
+        // Pattern 4: Theme + Figure + Object (e.g. Steampunk • Beekeeper • Hourglass)
         () => [
           { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
           { word: pick(BUCKETS.archetypes), category: "Figure" },
           { word: pick(BUCKETS.objects), category: "Object" }
         ],
-        // Pattern 5: Material + Creature + Biome (Classic organic, e.g. Gilded • Axolotl • Lagoon)
+        // Pattern 5: Material + Creature + Biome (e.g. Gilded • Axolotl • Lagoon)
         () => [
           { word: pick(BUCKETS.materials), category: "Material" },
           { word: pick(BUCKETS.creatures), category: "Creature" },
@@ -558,18 +550,13 @@
         </div>
       `).join("");
 
-      // Combined Concept Button + Combined Pinterest
+      // Combined Pinterest Search (Real pins, no AI generation)
       const combinedQuery = currentWordsData.map(d => d.word).join(" ");
       buttonsHtml += `
-        <div class="ref-button-row">
-          <button class="btn-ref btn-ref-combined" onclick="fetchCombinedConcept()">
-            <span>✨ Generate combined reference (${currentWordsData.length} words)</span>
-            <span>→</span>
-          </button>
-          <button class="btn-pinterest combined-pin" onclick="openPinterest('${combinedQuery}')" title="Search all on Pinterest">
-            P ↗
-          </button>
-        </div>
+        <button class="btn-ref btn-pinterest-all" onclick="openPinterest('${combinedQuery}')">
+          <span>Explore all words on Pinterest (<strong>${combinedQuery}</strong>)</span>
+          <span style="font-weight: 800; font-size: 0.95rem;">P ↗</span>
+        </button>
       `;
 
       btnContainer.innerHTML = buttonsHtml;
@@ -577,14 +564,14 @@
       // Reset gallery
       document.getElementById("galleryContainer").innerHTML = `
         <div class="empty-state">
-          Select any button above to pull 3 references, or tap <strong>P ↗</strong> to open Pinterest boards.
+          Select any word above to view 3 verified photos from Wikimedia Commons, or tap <strong>P ↗</strong> to view community boards on Pinterest.
         </div>
       `;
       document.getElementById("statusLabel").textContent = "Idle";
       document.getElementById("galleryTitle").textContent = "References";
     }
 
-    // --- 1. Real Single-Word References via Wikimedia Commons ---
+    // --- Real Single-Word References via Wikimedia Commons ---
     async function fetchWikiReferences(word) {
       const container = document.getElementById("galleryContainer");
       const statusLabel = document.getElementById("statusLabel");
@@ -640,48 +627,6 @@
         console.error(err);
         statusLabel.textContent = "Error loading Commons";
       }
-    }
-
-    // --- 2. Combined Concept Synthesis ---
-    function fetchCombinedConcept() {
-      const container = document.getElementById("galleryContainer");
-      const statusLabel = document.getElementById("statusLabel");
-      const galleryTitle = document.getElementById("galleryTitle");
-
-      const combinedText = currentWordsData.map(d => d.word.replace(/-/g, " ")).join(", ");
-      const styleItem = currentWordsData.find(d => d.isStyle);
-      const styleModifier = styleItem ? `in ${styleItem.word.replace(/-/g, " ")} visual aesthetic` : "masterwork concept art";
-
-      galleryTitle.textContent = `Combined: ${currentWordsData.map(d => d.word).join(" • ")}`;
-      statusLabel.textContent = "Synthesizing 3 studies...";
-
-      container.innerHTML = `
-        <div class="ref-card"><div class="skeleton"></div></div>
-        <div class="ref-card"><div class="skeleton"></div></div>
-        <div class="ref-card"><div class="skeleton"></div></div>
-      `;
-
-      const seedBase = Math.floor(Math.random() * 89999) + 1000;
-      const studies = [
-        {
-          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("epic concept art painting fusing " + combinedText + ", " + styleModifier + ", cinematic focal point, high detail, artstation")}?width=800&height=560&nologo=true&seed=${seedBase}`,
-          title: `Scene composition: ${combinedText}`,
-          badge: "✨ Concept Study 1 • Form & Composition"
-        },
-        {
-          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("macro detail and material texture of " + combinedText + ", " + styleModifier + ", 8k concept reference")}?width=800&height=560&nologo=true&seed=${seedBase + 1}`,
-          title: `Material & texture study`,
-          badge: "✨ Concept Study 2 • Detail & Texture"
-        },
-        {
-          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("cinematic lighting atmosphere of " + combinedText + ", " + styleModifier + ", dramatic color study")}?width=800&height=560&nologo=true&seed=${seedBase + 2}`,
-          title: `Atmospheric lighting & palette`,
-          badge: "✨ Concept Study 3 • Lighting & Mood"
-        }
-      ];
-
-      renderGalleryCards(studies);
-      statusLabel.textContent = "Ready";
     }
 
     // Gallery Renderer Helper
