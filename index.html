@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ArtPrompt — Pinterest Reference Spark</title>
+  <title>ArtPrompt — Split Pinterest Spark</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
   <!-- iOS PWA Meta Tags -->
@@ -21,8 +21,8 @@
       --card-border: rgba(255, 255, 255, 0.1);
       --accent: #8b5cf6;
       --pinterest-red: #e60023;
-      --pinterest-bg: rgba(230, 0, 35, 0.15);
-      --pinterest-border: rgba(230, 0, 35, 0.35);
+      --gradient-concept: linear-gradient(135deg, rgba(230, 0, 35, 0.35) 0%, rgba(139, 92, 246, 0.45) 100%);
+      --gradient-combined-concept: linear-gradient(135deg, #e60023 0%, #8b5cf6 100%);
       --text: #f4f4f5;
       --text-muted: #a1a1aa;
     }
@@ -53,7 +53,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .badge {
@@ -80,69 +80,79 @@
       gap: 16px;
       flex: 1;
       justify-content: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .instruction-label {
-      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
       margin-bottom: -4px;
-      padding-left: 4px;
+      padding: 0 4px;
       font-weight: 600;
     }
 
-    /* Word Buttons (Each word is a clickable Pinterest trigger) */
+    /* Split Cards Container */
     .words-stack {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
+    .split-card {
+      display: flex;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--card-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      min-height: 74px;
+    }
+
+    /* Common Button Reset */
     button {
       border: none;
       font-family: inherit;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 18px;
-      font-weight: 600;
-      transition: transform 0.12s ease, opacity 0.12s ease;
+      transition: transform 0.1s ease, opacity 0.1s ease;
     }
 
     button:active {
       transform: scale(0.97);
-      opacity: 0.9;
+      opacity: 0.85;
     }
 
-    .btn-word {
-      background: var(--card-bg);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid var(--card-border);
-      padding: 18px 20px;
+    /* Left Side: Exact Search */
+    .split-side-left {
+      flex: 1.4;
+      background: transparent;
+      padding: 14px 16px;
       justify-content: space-between;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       text-align: left;
     }
 
     .word-info {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
 
     .word-text {
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       font-weight: 800;
       letter-spacing: -0.02em;
       color: #fff;
     }
 
     .word-category {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: #a78bfa;
@@ -153,30 +163,64 @@
       color: #f472b6;
     }
 
-    .pin-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--pinterest-bg);
-      border: 1px solid var(--pinterest-border);
-      color: #ff4d6d;
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      font-weight: 800;
+    .exact-indicator {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      align-self: flex-start;
+      margin-top: 4px;
     }
 
-    /* Combined Search Button */
-    .btn-combined {
-      background: linear-gradient(135deg, #e60023, #b8001b);
-      color: #fff;
-      padding: 18px 20px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      box-shadow: 0 8px 24px rgba(230, 0, 35, 0.35);
+    /* Right Side: Gradient Concept Search */
+    .split-side-right {
+      flex: 1;
+      background: var(--gradient-concept);
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 12px 14px;
+      flex-direction: column;
       justify-content: center;
-      gap: 8px;
-      margin-top: 6px;
+      align-items: center;
+      text-align: center;
+      gap: 2px;
+      position: relative;
+    }
+
+    .concept-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .concept-subtitle {
+      font-size: 0.65rem;
+      color: #fbcfe8;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    /* Combined Split Card */
+    .split-card-combined {
+      margin-top: 4px;
+      border-color: rgba(230, 0, 35, 0.35);
+      box-shadow: 0 8px 26px rgba(230, 0, 35, 0.25);
+    }
+
+    .split-card-combined .split-side-left {
+      background: rgba(255, 255, 255, 0.04);
+      flex: 1.2;
+    }
+
+    .split-card-combined .split-side-right {
+      background: var(--gradient-combined-concept);
+      flex: 1;
     }
 
     /* Bottom Controls */
@@ -196,6 +240,7 @@
       font-weight: 600;
       border-radius: 16px;
       gap: 8px;
+      justify-content: center;
     }
 
     .btn-share {
@@ -205,6 +250,7 @@
       width: 52px;
       height: 52px;
       border-radius: 16px;
+      justify-content: center;
     }
   </style>
 </head>
@@ -216,16 +262,16 @@
   </header>
 
   <main class="content">
-    <div class="instruction-label">Tap word for Pinterest search</div>
+    <div class="instruction-label">
+      <span>Left: Exact Match</span>
+      <span>Right: + Concept Art</span>
+    </div>
     
-    <!-- Word Buttons Stack -->
+    <!-- Word Split Cards Stack -->
     <div class="words-stack" id="wordsContainer"></div>
 
-    <!-- Combined Pinterest Search Button -->
-    <button class="btn-combined" id="btnCombined">
-      <span>✨ Search Combined on Pinterest</span>
-      <span style="font-size: 0.9rem;">↗</span>
-    </button>
+    <!-- Combined Split Card -->
+    <div class="split-card split-card-combined" id="combinedContainer"></div>
   </main>
 
   <!-- Bottom Actions -->
@@ -360,30 +406,59 @@
       return isTriplet ? selectedPattern : selectedPattern.slice(0, 2);
     }
 
-    // Opens native Pinterest app or Safari Web
-    function openPinterest(query) {
-      const cleanTerm = query.replace(/-/g, " ") + " concept art reference";
-      const url = `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(cleanTerm)}`;
+    // Opens Pinterest: with or without the "+ concept art reference" modifier
+    function openPinterest(query, addConcept = false) {
+      let clean = query.replace(/-/g, " ").trim();
+      if (addConcept) {
+        clean += " concept art reference";
+      }
+      const url = `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(clean)}`;
       window.open(url, '_blank');
     }
 
     function renderUI() {
       const container = document.getElementById("wordsContainer");
 
-      // Each word rendered as a direct Pinterest action button
+      // Render each word as a 2-part split card
       container.innerHTML = currentWordsData.map((item) => `
-        <button class="btn-word" onclick="openPinterest('${item.word}')">
-          <div class="word-info">
-            <span class="word-category ${item.isStyle ? 'style-tag' : ''}">${item.category}</span>
-            <span class="word-text">${item.word}</span>
-          </div>
-          <span class="pin-badge">P ↗</span>
-        </button>
+        <div class="split-card">
+          <!-- Left: Exact Match -->
+          <button class="split-side-left" onclick="openPinterest('${item.word}', false)">
+            <div class="word-info">
+              <span class="word-category ${item.isStyle ? 'style-tag' : ''}">${item.category}</span>
+              <span class="word-text">${item.word}</span>
+              <span class="exact-indicator">Exact ↗</span>
+            </div>
+          </button>
+
+          <!-- Right: Gradient Concept Art -->
+          <button class="split-side-right" onclick="openPinterest('${item.word}', true)">
+            <span class="concept-title">🎨 Concept</span>
+            <span class="concept-subtitle">+ Reference ↗</span>
+          </button>
+        </div>
       `).join("");
 
-      // Update Combined Button Target
-      const combinedQuery = currentWordsData.map(d => d.word).join(" ");
-      document.getElementById("btnCombined").onclick = () => openPinterest(combinedQuery);
+      // Render the Combined prompt split card
+      const combinedContainer = document.getElementById("combinedContainer");
+      const combinedWords = currentWordsData.map(d => d.word).join(" ");
+      
+      combinedContainer.innerHTML = `
+        <!-- Left: Combined Exact -->
+        <button class="split-side-left" onclick="openPinterest('${combinedWords}', false)">
+          <div class="word-info">
+            <span class="word-category">All Combined</span>
+            <span class="word-text" style="font-size: 1.15rem;">${combinedWords}</span>
+            <span class="exact-indicator">Exact Search ↗</span>
+          </div>
+        </button>
+
+        <!-- Right: Combined Gradient Concept -->
+        <button class="split-side-right" onclick="openPinterest('${combinedWords}', true)">
+          <span class="concept-title">✨ Concept Art</span>
+          <span class="concept-subtitle">All Combined ↗</span>
+        </button>
+      `;
     }
 
     // Initialize Date
