@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ArtPrompt — Studio Reference Hub</title>
+  <title>ArtPrompt — Pinterest Reference Spark</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
   <!-- iOS PWA Meta Tags -->
@@ -12,7 +12,7 @@
   <meta name="theme-color" content="#09090b">
 
   <!-- Embedded Web App Manifest -->
-  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Smart%20Art%20Prompt%22%2C%22short_name%22%3A%22ArtPrompt%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%2309090b%22%7D">
+  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Art%20Prompt%20Spark%22%2C%22short_name%22%3A%22ArtPrompt%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%2309090b%22%7D">
 
   <style>
     :root {
@@ -20,7 +20,9 @@
       --card-bg: rgba(24, 24, 27, 0.85);
       --card-border: rgba(255, 255, 255, 0.1);
       --accent: #8b5cf6;
-      --pinterest-color: #e60023;
+      --pinterest-red: #e60023;
+      --pinterest-bg: rgba(230, 0, 35, 0.15);
+      --pinterest-border: rgba(230, 0, 35, 0.35);
       --text: #f4f4f5;
       --text-muted: #a1a1aa;
     }
@@ -40,112 +42,62 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-top: calc(env(safe-area-inset-top) + 14px);
+      padding-top: calc(env(safe-area-inset-top) + 16px);
       padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
-      padding-left: 16px;
-      padding-right: 16px;
-      overflow-x: hidden;
+      padding-left: 18px;
+      padding-right: 18px;
+      justify-content: space-between;
     }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
     }
 
     .badge {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       background: rgba(139, 92, 246, 0.18);
       color: #c4b5fd;
       border: 1px solid rgba(139, 92, 246, 0.35);
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 9999px;
       font-weight: 700;
     }
 
     .date-str {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
     }
 
-    /* Prompt Card */
-    .prompt-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid var(--card-border);
-      border-radius: 22px;
-      padding: 20px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-      margin-bottom: 20px;
+    /* Main Container */
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+      justify-content: center;
+      margin-bottom: 24px;
     }
 
-    .prompt-subtitle {
-      font-size: 0.75rem;
+    .instruction-label {
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-
-    /* Word Chips */
-    .words-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .word-chip {
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 10px 14px;
-      border-radius: 14px;
-      font-size: 1.18rem;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .word-category {
-      font-size: 0.65rem;
-      color: #c4b5fd;
-      background: rgba(139, 92, 246, 0.25);
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .word-category.style-tag {
-      color: #fbcfe8;
-      background: rgba(236, 72, 153, 0.25);
-      border: 1px solid rgba(236, 72, 153, 0.3);
-    }
-
-    .ref-btn-section-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 8px;
+      margin-bottom: -4px;
+      padding-left: 4px;
       font-weight: 600;
     }
 
-    .ref-buttons {
+    /* Word Buttons (Each word is a clickable Pinterest trigger) */
+    .words-stack {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .ref-button-row {
-      display: flex;
-      gap: 8px;
+      gap: 12px;
     }
 
     button {
@@ -155,60 +107,83 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      border-radius: 14px;
+      border-radius: 18px;
       font-weight: 600;
-      transition: transform 0.12s ease;
+      transition: transform 0.12s ease, opacity 0.12s ease;
     }
 
     button:active {
       transform: scale(0.97);
+      opacity: 0.9;
     }
 
-    .btn-ref {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.06);
+    .btn-word {
+      background: var(--card-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--card-border);
-      color: #f4f4f5;
-      padding: 11px 14px;
-      font-size: 0.88rem;
+      padding: 18px 20px;
       justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      text-align: left;
     }
 
-    .btn-ref-source {
-      font-size: 0.7rem;
-      color: #a78bfa;
-      font-weight: 500;
+    .word-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    /* Pinterest Buttons */
-    .btn-pinterest {
-      width: 48px;
-      background: rgba(230, 0, 35, 0.15);
-      border: 1px solid rgba(230, 0, 35, 0.35);
-      color: #ff4d6d;
+    .word-text {
+      font-size: 1.45rem;
       font-weight: 800;
-      font-size: 0.85rem;
-      border-radius: 14px;
-      padding: 0;
+      letter-spacing: -0.02em;
+      color: #fff;
     }
 
-    .btn-pinterest-all {
-      background: rgba(230, 0, 35, 0.18);
-      border: 1px solid rgba(230, 0, 35, 0.4);
+    .word-category {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a78bfa;
+      font-weight: 700;
+    }
+
+    .word-category.style-tag {
+      color: #f472b6;
+    }
+
+    .pin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--pinterest-bg);
+      border: 1px solid var(--pinterest-border);
       color: #ff4d6d;
-      padding: 12px 14px;
-      font-size: 0.9rem;
-      justify-content: space-between;
-      margin-top: 2px;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 800;
     }
 
-    /* Controls */
+    /* Combined Search Button */
+    .btn-combined {
+      background: linear-gradient(135deg, #e60023, #b8001b);
+      color: #fff;
+      padding: 18px 20px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(230, 0, 35, 0.35);
+      justify-content: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    /* Bottom Controls */
     .controls {
       display: flex;
-      gap: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 14px;
+      gap: 10px;
+      padding-top: 12px;
     }
 
     .btn-reroll {
@@ -216,189 +191,55 @@
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--card-border);
       color: #e4e4e7;
-      padding: 12px 16px;
-      font-size: 0.95rem;
+      padding: 15px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 16px;
+      gap: 8px;
     }
 
     .btn-share {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--card-border);
       color: var(--text);
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-    }
-
-    /* Gallery */
-    .gallery-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .gallery-title {
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
-    .gallery {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .empty-state {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px dashed rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      padding: 34px 20px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
-
-    .ref-card {
-      position: relative;
-      height: 230px;
-      border-radius: 18px;
-      overflow: hidden;
-      background: #141416;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-    }
-
-    .ref-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 0.35s ease;
-    }
-
-    .ref-card img.loaded {
-      opacity: 1;
-    }
-
-    .ref-label {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 10px 14px;
-      background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.2) 80%, transparent);
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .study-tag {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #c4b5fd;
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    .caption-text {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: block;
-      color: #e4e4e7;
-    }
-
-    /* Skeleton Loading */
-    .skeleton {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, #18181b 25%, #27272a 50%, #18181b 75%);
-      background-size: 200% 100%;
-      animation: pulse 1.6s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* Lightbox Modal */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
-      z-index: 100;
-      padding: 16px;
-    }
-
-    .modal.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal img {
-      max-width: 100%;
-      max-height: 85vh;
-      border-radius: 14px;
-      object-fit: contain;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <span class="badge">Art Prompt Studio</span>
+    <span class="badge">Pinterest Spark</span>
     <span class="date-str" id="currentDate">Today</span>
   </header>
 
-  <main>
-    <div class="prompt-card">
-      <div class="prompt-subtitle">Visual Spark Words</div>
-      <div class="words-container" id="wordsContainer"></div>
+  <main class="content">
+    <div class="instruction-label">Tap word for Pinterest search</div>
+    
+    <!-- Word Buttons Stack -->
+    <div class="words-stack" id="wordsContainer"></div>
 
-      <div class="ref-btn-section-label">Verified Photos & Pinterest</div>
-      <div class="ref-buttons" id="refButtons"></div>
-
-      <div class="controls">
-        <button class="btn-reroll" id="btnReroll">
-          <span style="font-size: 1.15rem; line-height: 1;">🙁</span>
-          No likey :(
-        </button>
-
-        <button class="btn-share" id="btnShare" aria-label="Share">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- References Gallery -->
-    <div class="gallery-header">
-      <h2 class="gallery-title" id="galleryTitle">References</h2>
-      <span class="date-str" id="statusLabel">Idle</span>
-    </div>
-
-    <div class="gallery" id="galleryContainer">
-      <div class="empty-state">
-        Select any word above to view 3 verified photos from Wikimedia Commons, or tap <strong>P ↗</strong> to view community boards on Pinterest.
-      </div>
-    </div>
+    <!-- Combined Pinterest Search Button -->
+    <button class="btn-combined" id="btnCombined">
+      <span>✨ Search Combined on Pinterest</span>
+      <span style="font-size: 0.9rem;">↗</span>
+    </button>
   </main>
 
-  <!-- Modal Lightbox -->
-  <div class="modal" id="modal" onclick="this.classList.remove('active')">
-    <img id="modalImg" src="" alt="Fullscreen reference">
+  <!-- Bottom Actions -->
+  <div class="controls">
+    <button class="btn-reroll" id="btnReroll">
+      <span style="font-size: 1.2rem; line-height: 1;">🙁</span>
+      <span>No likey :(</span>
+    </button>
+
+    <button class="btn-share" id="btnShare" aria-label="Share">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+      </svg>
+    </button>
   </div>
 
   <script>
@@ -477,7 +318,7 @@
 
     let currentWordsData = [];
 
-    // Smart Generator: Combines buckets into evocative, paintable 2 or 3 word sets
+    // Generator: Combines buckets into evocative, paintable 2 or 3 word sets
     function generateSmartWords() {
       const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
       const isTriplet = Math.random() > 0.3; // 70% chance of 3 words, 30% chance of 2
@@ -485,25 +326,25 @@
       const patterns = [
         // Pattern 1: Theme + Creature + Environment (e.g. Cyberpunk • Nautilus • Cenote)
         () => [
-          { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
+          { word: pick(BUCKETS.themes), category: "Theme / Style", isStyle: true },
           { word: pick(BUCKETS.creatures), category: "Creature" },
           { word: pick(BUCKETS.environments), category: "Biome" }
         ],
         // Pattern 2: Theme + Material + Object (e.g. Art-Nouveau • Obsidian • Lighthouse)
         () => [
-          { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
+          { word: pick(BUCKETS.themes), category: "Theme / Style", isStyle: true },
           { word: pick(BUCKETS.materials), category: "Material" },
           { word: pick(BUCKETS.objects), category: "Object" }
         ],
         // Pattern 3: Theme + Figure + Atmosphere (e.g. Solarpunk • Falconer • Mirage)
         () => [
-          { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
+          { word: pick(BUCKETS.themes), category: "Theme / Style", isStyle: true },
           { word: pick(BUCKETS.archetypes), category: "Figure" },
           { word: pick(BUCKETS.atmospheres), category: "Atmosphere" }
         ],
         // Pattern 4: Theme + Figure + Object (e.g. Steampunk • Beekeeper • Hourglass)
         () => [
-          { word: pick(BUCKETS.themes), category: "Theme", isStyle: true },
+          { word: pick(BUCKETS.themes), category: "Theme / Style", isStyle: true },
           { word: pick(BUCKETS.archetypes), category: "Figure" },
           { word: pick(BUCKETS.objects), category: "Object" }
         ],
@@ -519,7 +360,7 @@
       return isTriplet ? selectedPattern : selectedPattern.slice(0, 2);
     }
 
-    // Opens Pinterest App / Web Universal Link
+    // Opens native Pinterest app or Safari Web
     function openPinterest(query) {
       const cleanTerm = query.replace(/-/g, " ") + " concept art reference";
       const url = `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(cleanTerm)}`;
@@ -527,159 +368,29 @@
     }
 
     function renderUI() {
-      // 1. Render Words
-      const wordsContainer = document.getElementById("wordsContainer");
-      wordsContainer.innerHTML = currentWordsData.map((item) => `
-        <div class="word-chip">
-          <span>${item.word}</span>
-          <span class="word-category ${item.isStyle ? 'style-tag' : ''}">${item.category}</span>
-        </div>
-      `).join("");
+      const container = document.getElementById("wordsContainer");
 
-      // 2. Render Reference Buttons with Pinterest Quick-Action
-      const btnContainer = document.getElementById("refButtons");
-      let buttonsHtml = currentWordsData.map((item) => `
-        <div class="ref-button-row">
-          <button class="btn-ref" onclick="fetchWikiReferences('${item.word}')">
-            <span>Reference for <strong>${item.word}</strong></span>
-            <span class="btn-ref-source">📷 WikiCommons →</span>
-          </button>
-          <button class="btn-pinterest" onclick="openPinterest('${item.word}')" title="Search ${item.word} on Pinterest">
-            P ↗
-          </button>
-        </div>
-      `).join("");
-
-      // Combined Pinterest Search (Real pins, no AI generation)
-      const combinedQuery = currentWordsData.map(d => d.word).join(" ");
-      buttonsHtml += `
-        <button class="btn-ref btn-pinterest-all" onclick="openPinterest('${combinedQuery}')">
-          <span>Explore all words on Pinterest (<strong>${combinedQuery}</strong>)</span>
-          <span style="font-weight: 800; font-size: 0.95rem;">P ↗</span>
+      // Each word rendered as a direct Pinterest action button
+      container.innerHTML = currentWordsData.map((item) => `
+        <button class="btn-word" onclick="openPinterest('${item.word}')">
+          <div class="word-info">
+            <span class="word-category ${item.isStyle ? 'style-tag' : ''}">${item.category}</span>
+            <span class="word-text">${item.word}</span>
+          </div>
+          <span class="pin-badge">P ↗</span>
         </button>
-      `;
+      `).join("");
 
-      btnContainer.innerHTML = buttonsHtml;
-
-      // Reset gallery
-      document.getElementById("galleryContainer").innerHTML = `
-        <div class="empty-state">
-          Select any word above to view 3 verified photos from Wikimedia Commons, or tap <strong>P ↗</strong> to view community boards on Pinterest.
-        </div>
-      `;
-      document.getElementById("statusLabel").textContent = "Idle";
-      document.getElementById("galleryTitle").textContent = "References";
+      // Update Combined Button Target
+      const combinedQuery = currentWordsData.map(d => d.word).join(" ");
+      document.getElementById("btnCombined").onclick = () => openPinterest(combinedQuery);
     }
 
-    // --- Real Single-Word References via Wikimedia Commons ---
-    async function fetchWikiReferences(word) {
-      const container = document.getElementById("galleryContainer");
-      const statusLabel = document.getElementById("statusLabel");
-      const galleryTitle = document.getElementById("galleryTitle");
-
-      galleryTitle.textContent = `References: ${word}`;
-      statusLabel.textContent = "Searching WikiCommons...";
-
-      container.innerHTML = `
-        <div class="ref-card"><div class="skeleton"></div></div>
-        <div class="ref-card"><div class="skeleton"></div></div>
-        <div class="ref-card"><div class="skeleton"></div></div>
-      `;
-
-      try {
-        const searchTerm = word.replace(/-/g, " ");
-        const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchTerm)}&gsrnamespace=6&gsrlimit=24&prop=imageinfo&iiprop=url|mime&iiurlwidth=800&format=json&origin=*`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        let photos = [];
-        if (data.query && data.query.pages) {
-          const pages = Object.values(data.query.pages);
-          for (const p of pages) {
-            if (p.imageinfo && p.imageinfo[0]) {
-              const info = p.imageinfo[0];
-              const mime = info.mime || "";
-              if (mime.includes("jpeg") || mime.includes("jpg") || mime.includes("png") || mime.includes("webp")) {
-                const title = p.title.replace(/^File:/i, "").replace(/\.[^/.]+$/, "").replace(/_/g, " ");
-                photos.push({
-                  src: info.thumburl || info.url,
-                  title: title,
-                  badge: "📷 Wikimedia Commons • Real Photo"
-                });
-                if (photos.length >= 3) break;
-              }
-            }
-          }
-        }
-
-        // Safe fallback
-        while (photos.length < 3) {
-          photos.push({
-            src: `https://picsum.photos/seed/${encodeURIComponent(word + photos.length)}/800/600`,
-            title: `${word} visual archive`,
-            badge: "Photo Archive"
-          });
-        }
-
-        renderGalleryCards(photos);
-        statusLabel.textContent = "Ready";
-      } catch (err) {
-        console.error(err);
-        statusLabel.textContent = "Error loading Commons";
-      }
-    }
-
-    // Gallery Renderer Helper
-    function renderGalleryCards(items) {
-      const container = document.getElementById("galleryContainer");
-      container.innerHTML = "";
-
-      items.forEach((item) => {
-        const card = document.createElement("div");
-        card.className = "ref-card";
-
-        const skeleton = document.createElement("div");
-        skeleton.className = "skeleton";
-        card.appendChild(skeleton);
-
-        const img = document.createElement("img");
-        img.alt = item.title;
-
-        img.onload = () => {
-          skeleton.remove();
-          img.classList.add("loaded");
-        };
-
-        img.onerror = () => {
-          skeleton.remove();
-          img.src = `https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/600`;
-          img.classList.add("loaded");
-        };
-
-        img.src = item.src;
-        card.appendChild(img);
-
-        const label = document.createElement("div");
-        label.className = "ref-label";
-        label.innerHTML = `
-          <span class="study-tag">${item.badge}</span>
-          <span class="caption-text">${item.title}</span>
-        `;
-        card.appendChild(label);
-
-        card.onclick = () => {
-          document.getElementById("modalImg").src = item.src;
-          document.getElementById("modal").classList.add("active");
-        };
-
-        container.appendChild(card);
-      });
-    }
-
-    // Initialize
+    // Initialize Date
     const today = new Date();
     document.getElementById("currentDate").textContent = today.toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" });
 
+    // Initial Roll
     currentWordsData = generateSmartWords();
     renderUI();
 
@@ -694,7 +405,7 @@
       const wordsList = currentWordsData.map(d => d.word).join(" • ");
       const shareText = `Art Prompt Words: ${wordsList}`;
       if (navigator.share) {
-        await navigator.share({ title: "Smart Art Prompt", text: shareText });
+        await navigator.share({ title: "Art Prompt Spark", text: shareText });
       } else {
         navigator.clipboard.writeText(shareText);
         alert("Prompt words copied to clipboard!");
