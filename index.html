@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ArtPrompt — Smart Word References</title>
+  <title>ArtPrompt — Studio Reference Hub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
   <!-- iOS PWA Meta Tags -->
@@ -71,7 +71,7 @@
       color: var(--text-muted);
     }
 
-    /* Main Prompt Card */
+    /* Prompt Card */
     .prompt-card {
       background: var(--card-bg);
       backdrop-filter: blur(25px);
@@ -111,7 +111,6 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .word-index {
@@ -123,7 +122,6 @@
       border-radius: 6px;
     }
 
-    /* Reference Buttons Grid */
     .ref-btn-section-label {
       font-size: 0.75rem;
       color: var(--text-muted);
@@ -148,7 +146,7 @@
       gap: 6px;
       border-radius: 14px;
       font-weight: 600;
-      transition: transform 0.12s ease, background 0.2s ease;
+      transition: transform 0.12s ease;
     }
 
     button:active {
@@ -164,10 +162,10 @@
       justify-content: space-between;
     }
 
-    .btn-ref.active {
-      border-color: #a78bfa;
-      background: rgba(139, 92, 246, 0.2);
-      color: #fff;
+    .btn-ref-source {
+      font-size: 0.7rem;
+      color: #a78bfa;
+      font-weight: 500;
     }
 
     .btn-ref-combined {
@@ -179,7 +177,7 @@
       border: none;
     }
 
-    /* Bottom Control Bar */
+    /* Controls */
     .controls {
       display: flex;
       gap: 8px;
@@ -205,7 +203,7 @@
       border-radius: 14px;
     }
 
-    /* References Gallery */
+    /* Gallery */
     .gallery-header {
       display: flex;
       justify-content: space-between;
@@ -237,7 +235,7 @@
 
     .ref-card {
       position: relative;
-      height: 220px;
+      height: 230px;
       border-radius: 18px;
       overflow: hidden;
       background: #141416;
@@ -263,7 +261,7 @@
       left: 0;
       right: 0;
       padding: 10px 14px;
-      background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.2) 80%, transparent);
+      background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.2) 80%, transparent);
       font-size: 0.78rem;
       font-weight: 600;
       color: #fff;
@@ -278,7 +276,15 @@
       margin-bottom: 2px;
     }
 
-    /* Skeleton Loading State */
+    .caption-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      color: #e4e4e7;
+    }
+
+    /* Skeleton Loading */
     .skeleton {
       position: absolute;
       inset: 0;
@@ -292,7 +298,7 @@
       100% { background-position: -200% 0; }
     }
 
-    /* Modal / Lightbox */
+    /* Lightbox Modal */
     .modal {
       position: fixed;
       inset: 0;
@@ -330,12 +336,11 @@
   </header>
 
   <main>
-    <!-- Smart Words Card -->
     <div class="prompt-card">
       <div class="prompt-subtitle">Visual Spark Words</div>
       <div class="words-container" id="wordsContainer"></div>
 
-      <div class="ref-btn-section-label">Fetch Visual References (3 Studies)</div>
+      <div class="ref-btn-section-label">Generate 3 References</div>
       <div class="ref-buttons" id="refButtons"></div>
 
       <div class="controls">
@@ -360,50 +365,44 @@
 
     <div class="gallery" id="galleryContainer">
       <div class="empty-state">
-        Select a button above to generate 3 targeted reference studies for a single word or the full combination.
+        Select any button above to generate 3 targeted references.
       </div>
     </div>
   </main>
 
-  <!-- Fullscreen Lightbox -->
+  <!-- Modal Lightbox -->
   <div class="modal" id="modal" onclick="this.classList.remove('active')">
     <img id="modalImg" src="" alt="Fullscreen reference">
   </div>
 
   <script>
-    // Curated Conceptual Word Banks
     const BUCKET_SUBJECTS = [
-      "Leviathan", "Alchemist", "Golem", "Locomotive", "Astronaut", "Gargoyle",
-      "Lighthouse", "Marionette", "Scarecrow", "Clockwork", "Relic", "Nomad",
-      "Samurai", "Jellyfish", "Beekeeper", "Diver", "Hermit", "Monolith"
+      "Lighthouse", "Gargoyle", "Locomotive", "Astronaut", "Jellyfish",
+      "Golem", "Marionette", "Monolith", "Samurai", "Beekeeper",
+      "Scarecrow", "Diver", "Clockwork", "Alchemist", "Leviathan"
     ];
 
     const BUCKET_TEXTURES = [
-      "Obsidian", "Bioluminescent", "Crystalline", "Overgrown", "Molten",
-      "Porcelain", "Submerged", "Corroded", "Prismatic", "Verdant", "Gilded",
-      "Spectral", "Shattered", "Driftwood", "Iridescent", "Neon"
+      "Obsidian", "Crystalline", "Overgrown", "Molten", "Porcelain",
+      "Submerged", "Corroded", "Prismatic", "Gilded", "Spectral",
+      "Driftwood", "Iridescent", "Neon", "Verdant"
     ];
 
     const BUCKET_ENVIRONMENTS = [
-      "Cathedral", "Eclipse", "Trench", "Nebula", "Catacombs", "Monsoon",
-      "Sanctuary", "Permafrost", "Abyss", "Dunes", "Greenhouse", "Foundry",
-      "Archway", "Canopy", "Spire"
+      "Cathedral", "Eclipse", "Trench", "Nebula", "Catacombs",
+      "Monsoon", "Sanctuary", "Permafrost", "Abyss", "Dunes",
+      "Greenhouse", "Foundry", "Archway", "Spire"
     ];
 
     let currentWords = [];
 
-    // Smart Generator: Combines buckets into evocative pairs or triplets
     function generateSmartWords() {
-      const isTriplet = Math.random() > 0.35; // ~65% chance of 3 words, 35% chance of 2
+      const isTriplet = Math.random() > 0.35;
       const subject = BUCKET_SUBJECTS[Math.floor(Math.random() * BUCKET_SUBJECTS.length)];
       const texture = BUCKET_TEXTURES[Math.floor(Math.random() * BUCKET_TEXTURES.length)];
       const env = BUCKET_ENVIRONMENTS[Math.floor(Math.random() * BUCKET_ENVIRONMENTS.length)];
 
-      if (isTriplet) {
-        return [texture, subject, env];
-      } else {
-        return Math.random() > 0.5 ? [texture, subject] : [subject, env];
-      }
+      return isTriplet ? [texture, subject, env] : [texture, subject];
     }
 
     function renderUI() {
@@ -418,17 +417,17 @@
 
       // 2. Render Reference Buttons
       const btnContainer = document.getElementById("refButtons");
-      let buttonsHtml = currentWords.map((word, i) => `
-        <button class="btn-ref" onclick="fetchReferencesFor('${word}', 'Word: ${word}')">
-          <span>Generate reference for <strong>${word}</strong></span>
-          <span style="color:#a78bfa">→</span>
+      let buttonsHtml = currentWords.map((word) => `
+        <button class="btn-ref" onclick="fetchWikiReferences('${word}')">
+          <span>Reference for <strong>${word}</strong></span>
+          <span class="btn-ref-source">📷 WikiCommons →</span>
         </button>
       `).join("");
 
-      // Combined Button
+      // Combined Concept Button
       const combinedQuery = currentWords.join(" ");
       buttonsHtml += `
-        <button class="btn-ref btn-ref-combined" onclick="fetchReferencesFor('${combinedQuery}', 'Combined: ${combinedQuery}')">
+        <button class="btn-ref btn-ref-combined" onclick="fetchCombinedConcept('${combinedQuery}')">
           <span>✨ Generate combined reference (${currentWords.length} words)</span>
           <span>→</span>
         </button>
@@ -436,57 +435,119 @@
 
       btnContainer.innerHTML = buttonsHtml;
 
-      // Reset gallery to empty state
+      // Reset gallery
       document.getElementById("galleryContainer").innerHTML = `
         <div class="empty-state">
-          Select a button above to generate 3 targeted reference studies.
+          Select any button above to pull 3 references.
         </div>
       `;
       document.getElementById("statusLabel").textContent = "Idle";
       document.getElementById("galleryTitle").textContent = "References";
     }
 
-    // Pull or Generate 3 targeted visual references
-    function fetchReferencesFor(query, titleLabel) {
+    // --- 1. Real Single-Word References via Wikimedia Commons ---
+    async function fetchWikiReferences(word) {
       const container = document.getElementById("galleryContainer");
       const statusLabel = document.getElementById("statusLabel");
       const galleryTitle = document.getElementById("galleryTitle");
 
-      galleryTitle.textContent = titleLabel;
-      statusLabel.textContent = "Rendering 3 studies...";
+      galleryTitle.textContent = `References: ${word}`;
+      statusLabel.textContent = "Searching WikiCommons...";
 
-      // 3 Targeted studies for artists (Composition, Texture/Material, Lighting/Atmosphere)
+      container.innerHTML = `
+        <div class="ref-card"><div class="skeleton"></div></div>
+        <div class="ref-card"><div class="skeleton"></div></div>
+        <div class="ref-card"><div class="skeleton"></div></div>
+      `;
+
+      try {
+        // Query Wikimedia Commons for 15 results, requesting pre-scaled 800px image thumbnails
+        const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(word)}&gsrnamespace=6&gsrlimit=18&prop=imageinfo&iiprop=url|mime&iiurlwidth=800&format=json&origin=*`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        let photos = [];
+        if (data.query && data.query.pages) {
+          const pages = Object.values(data.query.pages);
+          for (const p of pages) {
+            if (p.imageinfo && p.imageinfo[0]) {
+              const info = p.imageinfo[0];
+              const mime = info.mime || "";
+              // Strictly filter for actual photos/raster images (skip SVGs, PDFs, sound files)
+              if (mime.includes("jpeg") || mime.includes("jpg") || mime.includes("png") || mime.includes("webp")) {
+                const title = p.title.replace(/^File:/i, "").replace(/\.[^/.]+$/, "").replace(/_/g, " ");
+                photos.push({
+                  src: info.thumburl || info.url,
+                  title: title,
+                  badge: "📷 Wikimedia Commons • Real Photo"
+                });
+                if (photos.length >= 3) break;
+              }
+            }
+          }
+        }
+
+        // Safe fallback if fewer than 3 photos found
+        while (photos.length < 3) {
+          photos.push({
+            src: `https://picsum.photos/seed/${encodeURIComponent(word + photos.length)}/800/600`,
+            title: `${word} visual study`,
+            badge: "Photo Archive"
+          });
+        }
+
+        renderGalleryCards(photos);
+        statusLabel.textContent = "Ready";
+      } catch (err) {
+        console.error(err);
+        statusLabel.textContent = "Error loading Commons";
+      }
+    }
+
+    // --- 2. Combined Concept Synthesis ---
+    function fetchCombinedConcept(combinedQuery) {
+      const container = document.getElementById("galleryContainer");
+      const statusLabel = document.getElementById("statusLabel");
+      const galleryTitle = document.getElementById("galleryTitle");
+
+      galleryTitle.textContent = `Combined: ${combinedQuery}`;
+      statusLabel.textContent = "Synthesizing 3 studies...";
+
+      container.innerHTML = `
+        <div class="ref-card"><div class="skeleton"></div></div>
+        <div class="ref-card"><div class="skeleton"></div></div>
+        <div class="ref-card"><div class="skeleton"></div></div>
+      `;
+
       const seedBase = Math.floor(Math.random() * 89999) + 1000;
       const studies = [
         {
-          tag: "Study 1 • Composition & Form",
-          desc: `Full scene study of ${query}`,
-          prompt: `${query}, visual concept art, strong focal point composition, masterwork painting --seed ${seedBase}`
+          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("epic concept art painting of " + combinedQuery + ", focal point composition, masterwork artstation")}?width=800&height=560&nologo=true&seed=${seedBase}`,
+          title: `Composition study: ${combinedQuery}`,
+          badge: "✨ Concept Study 1 • Form & Composition"
         },
         {
-          tag: "Study 2 • Detail & Material Texture",
-          desc: `Close-up texture and details of ${query}`,
-          prompt: `Macro detail study of ${query}, intricate textures, materials, high definition concept reference --seed ${seedBase + 1}`
+          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("macro detail and material texture of " + combinedQuery + ", high detail 8k concept art")}?width=800&height=560&nologo=true&seed=${seedBase + 1}`,
+          title: `Material & texture study`,
+          badge: "✨ Concept Study 2 • Detail & Texture"
         },
         {
-          tag: "Study 3 • Lighting & Color Mood",
-          desc: `Atmospheric lighting and palette for ${query}`,
-          prompt: `Dramatic lighting and evocative atmosphere study of ${query}, cinematic lighting, color mood study --seed ${seedBase + 2}`
+          src: `https://image.pollinations.ai/prompt/${encodeURIComponent("cinematic lighting and atmosphere of " + combinedQuery + ", dramatic color harmony")}?width=800&height=560&nologo=true&seed=${seedBase + 2}`,
+          title: `Atmospheric lighting & palette`,
+          badge: "✨ Concept Study 3 • Lighting & Mood"
         }
       ];
 
-      // Insert Skeletons
-      container.innerHTML = studies.map(() => `
-        <div class="ref-card">
-          <div class="skeleton"></div>
-        </div>
-      `).join("");
+      renderGalleryCards(studies);
+      statusLabel.textContent = "Ready";
+    }
 
-      let loadedCount = 0;
-
-      // Render 3 Images
+    // Card Renderer Helper
+    function renderGalleryCards(items) {
+      const container = document.getElementById("galleryContainer");
       container.innerHTML = "";
-      studies.forEach((study) => {
+
+      items.forEach((item) => {
         const card = document.createElement("div");
         card.className = "ref-card";
 
@@ -495,37 +556,32 @@
         card.appendChild(skeleton);
 
         const img = document.createElement("img");
-        const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(study.prompt)}?width=800&height=560&nologo=true`;
+        img.alt = item.title;
 
         img.onload = () => {
           skeleton.remove();
           img.classList.add("loaded");
-          loadedCount++;
-          if (loadedCount >= studies.length) {
-            statusLabel.textContent = "Ready";
-          }
         };
 
         img.onerror = () => {
           skeleton.remove();
-          img.src = `https://picsum.photos/seed/${encodeURIComponent(study.desc)}/800/560`;
+          img.src = `https://picsum.photos/seed/${encodeURIComponent(item.title)}/800/600`;
           img.classList.add("loaded");
         };
 
-        img.src = imgUrl;
-        img.alt = study.desc;
+        img.src = item.src;
         card.appendChild(img);
 
         const label = document.createElement("div");
         label.className = "ref-label";
         label.innerHTML = `
-          <span class="study-tag">${study.tag}</span>
-          ${study.desc}
+          <span class="study-tag">${item.badge}</span>
+          <span class="caption-text">${item.title}</span>
         `;
         card.appendChild(label);
 
         card.onclick = () => {
-          document.getElementById("modalImg").src = img.src;
+          document.getElementById("modalImg").src = item.src;
           document.getElementById("modal").classList.add("active");
         };
 
@@ -533,15 +589,14 @@
       });
     }
 
-    // Set Date
+    // Initialize
     const today = new Date();
     document.getElementById("currentDate").textContent = today.toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" });
 
-    // Initial Roll
     currentWords = generateSmartWords();
     renderUI();
 
-    // Reroll Button: "No likey :("
+    // Reroll Button
     document.getElementById("btnReroll").onclick = () => {
       currentWords = generateSmartWords();
       renderUI();
