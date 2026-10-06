@@ -12,7 +12,7 @@
   <meta name="theme-color" content="#09090b">
 
   <!-- Embedded Web App Manifest -->
-  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Art%20Prompt%20Spark%22%2C%22short_name%22%3A%22ArtPrompt%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background-color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%2309090b%22%7D">
+  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Art%20Prompt%20Spark%22%2C%22short_name%22%3A%22ArtPrompt%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%2309090b%22%7D">
 
   <style>
     :root {
@@ -275,9 +275,9 @@
         <span class="guide-tag concept-tag">+ Concept</span>
       </div>
 
-      <!-- Grouped in top right corner above buttons (Enlarged) -->
+      <!-- Grouped in top right corner above buttons -->
       <div class="top-actions">
-        <!-- Reroll button (Twice as big) -->
+        <!-- Reroll button (Large squareish) -->
         <button class="btn-icon-large" id="btnReroll" aria-label="Reroll prompt" title="Reroll prompt">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 2v6h-6"></path>
@@ -287,7 +287,7 @@
           </svg>
         </button>
 
-        <!-- Share button (Twice as big) -->
+        <!-- Share button (Large squareish) -->
         <button class="btn-icon-large" id="btnShare" aria-label="Share" title="Share prompt">
           <svg width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
@@ -379,37 +379,32 @@
 
     let currentWordsData = [];
 
-    // Generator: Combines buckets into evocative, paintable 2 or 3 word sets
+    // Generator: Combines buckets into evocative 2 or 3 word sets
     function generateSmartWords() {
       const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
       const isTriplet = Math.random() > 0.3; // 70% chance of 3 words, 30% chance of 2
 
       const patterns = [
-        // Pattern 1: Theme + Creature + Environment (e.g. Cyberpunk • Nautilus • Cenote)
         () => [
           { word: pick(BUCKETS.themes), category: "Theme / Style", isStyle: true },
           { word: pick(BUCKETS.creatures), category: "Creature" },
           { word: pick(BUCKETS.environments), category: "Biome" }
         ],
-        // Pattern 2: Theme + Material + Object (e.g. Art-Nouveau • Obsidian • Lighthouse)
         () => [
           { word: pick(BUCKETS.themes), category: "Theme / Style", isStyle: true },
           { word: pick(BUCKETS.materials), category: "Material" },
           { word: pick(BUCKETS.objects), category: "Object" }
         ],
-        // Pattern 3: Theme + Figure + Atmosphere (e.g. Solarpunk • Falconer • Mirage)
         () => [
           { word: pick(BUCKETS.themes), category: "Theme / Style", isStyle: true },
           { word: pick(BUCKETS.archetypes), category: "Figure" },
           { word: pick(BUCKETS.atmospheres), category: "Atmosphere" }
         ],
-        // Pattern 4: Theme + Figure + Object (e.g. Steampunk • Beekeeper • Hourglass)
         () => [
           { word: pick(BUCKETS.themes), category: "Theme / Style", isStyle: true },
           { word: pick(BUCKETS.archetypes), category: "Figure" },
           { word: pick(BUCKETS.objects), category: "Object" }
         ],
-        // Pattern 5: Material + Creature + Biome (e.g. Gilded • Axolotl • Lagoon)
         () => [
           { word: pick(BUCKETS.materials), category: "Material" },
           { word: pick(BUCKETS.creatures), category: "Creature" },
@@ -421,14 +416,41 @@
       return isTriplet ? selectedPattern : selectedPattern.slice(0, 2);
     }
 
-    // Opens Pinterest: with or without the "+ concept art reference" modifier
+    // Opens Pinterest: Native App Scheme directly on iPad/iOS to prevent leaving a white blank screen
     function openPinterest(query, addConcept = false) {
       let clean = query.replace(/-/g, " ").trim();
       if (addConcept) {
         clean += " concept art reference";
       }
-      const url = `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(clean)}`;
-      window.open(url, '_blank');
+      const encoded = encodeURIComponent(clean);
+      const appUrl = `pinterest://search/pins/?q=${encoded}`;
+      const webUrl = `https://www.pinterest.com/search/pins/?q=${encoded}`;
+
+      // Check for iOS / iPadOS
+      const isApple = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+      if (isApple) {
+        // Trigger native URL scheme directly:
+        // Unlike window.open(), this hands off directly to the Pinterest app without
+        // causing WebKit to create an in-app browser tab that gets stuck on a white screen.
+        const start = Date.now();
+        const a = document.createElement('a');
+        a.href = appUrl;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => a.remove(), 250);
+
+        // Fallback: only if Pinterest is not installed and the page stayed active
+        setTimeout(() => {
+          if (document.visibilityState === 'visible' && (Date.now() - start < 1500)) {
+            window.location.href = webUrl;
+          }
+        }, 800);
+      } else {
+        // Desktop / other platforms
+        window.open(webUrl, '_blank', 'noopener,noreferrer');
+      }
     }
 
     function renderUI() {
